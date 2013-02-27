@@ -7,7 +7,7 @@ import os, sys, shutil, re
 import datetime
 
 # if this this is not empty, then only these files will be processed
-file_list  = [
+file_list = [
 ]
 
 input_dir = "/home/xah/web/xahlee_info/comp"
@@ -29,8 +29,8 @@ find_replace_list = [
 
 
 for x in find_replace_list:
-   if len(x) != 2:
-      sys.exit("Error: replacement pair has more than 2 elements. Probably missing a comma.")
+    if len(x) != 2:
+       sys.exit("Error: replacement pair has more than 2 elements. Probably missing a comma.")
 
 def replace_string_in_file(file_path):
    "Replaces all findStr by repStr in file file_path"
