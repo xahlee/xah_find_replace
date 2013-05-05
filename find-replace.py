@@ -8,9 +8,11 @@ import datetime
 
 # if this this is not empty, then only these files will be processed
 file_list  = [
+r"/home/xah/web/xahlee_info/comp/blog.html"
 ]
 
 input_dir = "/home/xah/web/xahlee_info/comp"
+input_dir = os.path.normpath(input_dir)
 
 min_level = 1 # files and dirs inside input_dir are level 1.
 max_level = 6 # inclusive
@@ -34,7 +36,6 @@ for x in find_replace_list:
 
 def replace_string_in_file(file_path):
    "Replaces all findStr by repStr in file file_path"
-   temp_fname = file_path + "~lc~"
    backup_fname = file_path + "~bk~"
 
    # print "reading:", file_path
@@ -42,7 +43,6 @@ def replace_string_in_file(file_path):
    file_content = unicode(input_file.read(), "utf-8")
    input_file.close()
 
-   print file_path
    num_replaced = 0
    for a_pair in find_replace_list:
       num_replaced += file_content.count(a_pair[0])
@@ -63,7 +63,6 @@ def replace_string_in_file(file_path):
          print "no change:", file_path
 
 #      os.remove(file_path)
-#      os.rename(temp_fname, file_path)
 
 def process_file(dummy, current_dir, file_list):
    cur_dir_level = current_dir.count( os.sep) - input_dir.count( os.sep)
@@ -84,7 +83,6 @@ for x in find_replace_list:
    print u"replace:", x[1].encode("utf-8")
    print "\n"
 
-input_dir = os.path.normpath(input_dir)
 
 if (len(file_list) != 0):
    for ff in file_list: replace_string_in_file(os.path.normpath(ff) )
