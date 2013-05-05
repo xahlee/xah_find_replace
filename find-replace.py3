@@ -22,8 +22,8 @@ print_file_name_has_no_change = False
 find_replace_list = [
 
 (
-"""aaooeeuu""",
-"""aaooeeuu♥""",
+"""\N{ZERO WIDTH NO-BREAK SPACE}""",
+"""♥""",
 ),
 
 ]
@@ -76,7 +76,6 @@ else:
         if min_level <= curFileLevel <= max_level:
             for fName in fileList:
                 if (re.search(r"\.html$", fName, re.U)):
-                    # print("fname:", fName)
                     replace_string_in_file(dirPath + os.sep + fName)
                     print ("level %d,  %s" % (curFileLevel, os.path.join(dirPath, fName)))
 
