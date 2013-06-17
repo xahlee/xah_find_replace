@@ -64,15 +64,15 @@ def replace_string_in_file(file_path):
 
 #      os.remove(file_path)
 
-def process_file(dummy, current_dir, file_list):
-   cur_dir_level = current_dir.count( os.sep) - input_dir.count( os.sep)
+def process_file(dummy, currentDir, fileList):
+   cur_dir_level = currentDir.count( os.sep) - input_dir.count( os.sep)
    cur_file_level = cur_dir_level + 1
    if min_level <= cur_file_level <= max_level:
-      for fName in file_list:
+      for fName in fileList:
          if (re.search(r"\.html$", fName, re.U)):
             print fName
-            replace_string_in_file(current_dir + os.sep + fName)
-            # print ("%d %s" % (cur_file_level, (current_dir + os.sep + fName).replace(os.sep, "/")))
+            replace_string_in_file(currentDir + os.sep + fName)
+            # print ("%d %s" % (cur_file_level, (currentDir + os.sep + fName).replace(os.sep, "/")))
 
 # ----------------------------------
 

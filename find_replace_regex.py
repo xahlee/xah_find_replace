@@ -8,17 +8,17 @@
 
 import os, sys, shutil, re
 
-input_dir = "/cygdrive/c/Users/h3/web/xahlee_org/Periodic_dosage_dir/bangu"
-input_dir = "c:/Users/h3/web/ergoemacs_org"
+input_dir = "/home/xah/web/"
 
 find_replace_list = [
 
-# (re.compile(ur"""<header>.+</header>""", re.U|re.M|re.DOTALL), ur"""•8017015673"""),
+   (re.compile(ur"""<h1>([^<]+?)</h1>[ \n]+9ea99fef-0623-fc80-597f-37fdc6ffeb0a""", re.U|re.M|re.DOTALL), ur"""9ea99fef-0623-fc80-597f-37fdc6ffeb0a
+<h1>\1</h1>"""),
 
-(re.compile(ur"""•8017015673""", re.U|re.M|re.DOTALL), ur"""<header>
-<span class="xsignet">∑</span> <a href="http://ergoemacs.org/index.html">ErgoEmacs</a> ◆ <span id="e1α"><a href="http://ergoemacs.org/emacs/emacs.html">Emacs</a> ◇ <a href="http://ergoemacs.org/emacs/elisp.html">Lisp</a></span> ◆ <a href="http://ergoemacs.org/emacs/blog.html">Blog</a> ◆ <span id="e2α"><a href="http://ergoemacs.org/emacs_manual/emacs/index.html">Emacs</a> ◇ <a href="http://ergoemacs.org/emacs_manual/elisp/index.html">Lisp</a></span> ◆ <a href="http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html">Buy Tutorial</a>
-<form action="http://www.google.com" id="cse-search-box"> <div> <input type="hidden" name="cx" value="partner-pub-5125343095650532:8381157956" /> <input type="hidden" name="ie" value="UTF-8" /> <input type="text" name="q" size="55" /> <input type="submit" name="sa" value="Search" /> </div> </form><script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
-</header>"""),
+# (re.compile(ur"""•8017015673""", re.U|re.M|re.DOTALL), ur"""<header>
+# <span class="xsignet">∑</span> <a href="http://ergoemacs.org/index.html">ErgoEmacs</a> ◆ <span id="e1α"><a href="http://ergoemacs.org/emacs/emacs.html">Emacs</a> ◇ <a href="http://ergoemacs.org/emacs/elisp.html">Lisp</a></span> ◆ <a href="http://ergoemacs.org/emacs/blog.html">Blog</a> ◆ <span id="e2α"><a href="http://ergoemacs.org/emacs_manual/emacs/index.html">Emacs</a> ◇ <a href="http://ergoemacs.org/emacs_manual/elisp/index.html">Lisp</a></span> ◆ <a href="http://ergoemacs.org/emacs/buy_xah_emacs_tutorial.html">Buy Tutorial</a>
+# <form action="http://www.google.com" id="cse-search-box"> <div> <input type="hidden" name="cx" value="partner-pub-5125343095650532:8381157956" /> <input type="hidden" name="ie" value="UTF-8" /> <input type="text" name="q" size="55" /> <input type="submit" name="sa" value="Search" /> </div> </form><script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
+# </header>"""),
 
 
 # (re.compile(ur"""<img src="([^"]+?)" alt="([^"]+?)" width="([0-9]+)" height="([0-9]+)">
