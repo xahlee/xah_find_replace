@@ -11,6 +11,8 @@ file_list = [
 ]
 
 input_dir = "/home/xah/web/wordyenglish_com/"
+input_dir = "/home/xah/web/wordyenglish_com/titus/"
+input_dir = "/home/xah/web/ergoemacs_org/"
 input_dir = "/home/xah/web/"
 
 input_dir = os.path.normpath(input_dir)
@@ -20,37 +22,19 @@ max_level = 6 # inclusive
 
 print_file_name_has_no_change = False
 
-# <p class="author_0"><address><a href="https://plus.google.com/112757647855302148298?rel=author" rel="author">Xah Lee</a></address>, <time>2013-06-10</time></p>
-
-# <p class="author_0">Xah Lee,\([^<]+?\)<time>\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\)</time></p>
-# <p class="author_0">Xah Lee,\([- ,…<>/time0-9]+?\)<time>\([0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]\)</time></p>
-# <div class="author_0"><address><a href="https://plus.google.com/112757647855302148298?rel=author" rel="author">Xah Lee</a></address>,\1<time>\2</time></div>
-
-# <p class="author_0">Xah Lee,\([- ,…0-9]+?\)</p>
-
-# <script>(function() { var po=document.createElement('script');po.type='text/javascript';po.async=true;po.src='https://apis.google.com/js/plusone.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(po,s);})();</script>
-# <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
-# <div id="fb-root"></div>
-# <script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = "//connect.facebook.net/en_US/all.js#xfbml=1"; fjs.parentNode.insertBefore(js, fjs); }(document, 'script', 'facebook-jssdk'));</script>
-
-# "691751129124876",
-
-# • add text thta says it's ad
+# • remember to remove js/ex dir
 # • many pages don't have double ads
 
 find_replace_list = [
-
 (
 
-"""</h1>
+"""<input type="hidden" name="ie" value="UTF-8" /> <input type="text" name="q" size="55" /> <input type="submit" name="sa" value="Search" /> </div> </form> <script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>ttttttttttttttttttttt""",
 
-<div class="header66704">""",
+"""<input type="hidden" name="ie" value="UTF-8" /> <input type="text" name="q" size="20" /> <input type="submit" name="sa" value="Search" /> </div> </form><script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>""",
 
-"""</h1>
+# """<input type="hidden" name="ie" value="UTF-8" /> <input type="text" name="q" size="55" /> <input type="submit" name="sa" value="Search" /> </div> </form> <script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>""",
 
-<div class="header66704">""",
-
-) ,
+),
 
 ]
 
