@@ -14,6 +14,9 @@ file_list = [
 ]
 
 input_dir = "/home/xah/web/xahlee_info/"
+
+input_dir = "/home/xah/web/ergoemacs_org/emacs/"
+
 input_dir = os.path.normpath(input_dir)
 
 min_level = 1 # files and dirs inside input_dir are level 1.
@@ -22,16 +25,16 @@ max_level = 6 # inclusive
 print_file_name_has_no_change = False
 
 find_str_list = [
-r"""\N{ZERO WIDTH NO-BREAK SPACE}""",
-r"""<!-- ~/web/xahlee_info/comp/xx_comp_blog.html -->"""
+# "https://www.youtube.com/watch?v="
+# "82tzllnsQ38"
+r"Sacha ＆ Marie"
 ]
 
 
 
 def report_string_in_file(file_path):
-   "print occurances of string in file_path
-   the strings to search is from find_str_list
-   "
+   """print occurances of string in file_path
+   the strings to search is from find_str_list"""
 
    input_file = open(file_path, "r")
    file_content = input_file.read()

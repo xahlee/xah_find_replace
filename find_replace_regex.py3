@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
-# change all files in a dir. 
-# using mulitple regex/replace pairs 
+# change all files in a dir.
+# using mulitple regex/replace pairs
 
-# last used at least: 2012-03-14
+# last used at least: 2015-03-23
 
 import os, sys, shutil, re
 import datetime
@@ -13,46 +13,42 @@ import datetime
 file_list = [
 ]
 
-input_dir = "/cygdrive/c/Users/h3/web/xahlee_org/Periodic_dosage_dir/bangu"
 input_dir = "/home/xah/web/xahlee_info"
 
 min_level = 1 # files and dirs inside input_dir are level 1.
-max_level = 6 # inclusive
+max_level = 7 # inclusive
 
 find_replace_list = [
 
-(re.compile(r"""<header>.+</header>""", re.U|re.M|re.DOTALL), r"""<nav id="t5">
+(re.compile(r"""<nav id="t5">
 <ul>
-<li><a href="http://xahlee.info/SpecialPlaneCurves_dir/specialPlaneCurves.html">Curves</a></li>
-<li><a href="http://xahlee.info/surface/gallery.html">Surfaces</a></li>
-<li><a href="http://xahlee.info/Wallpaper_dir/c0_WallPaper.html">Wallpaper Groups</a></li>
-<li><a href="http://xahlee.info/MathGraphicsGallery_dir/mathGraphicsGallery.html">Gallery</a></li>
-<li><a href="http://xahlee.info/math_software/mathPrograms.html">Software</a></li>
-<li><a href="http://xahlee.info/3d/index.html">POV-Ray</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?specialPlaneCurves.html">Curves</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?gallery.html">Surfaces</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?c0_WallPaper.html">Wallpaper Groups</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?mathGraphicsGallery.html">Gallery</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?mathPrograms.html">Math Software</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?index.html">POV-Ray</a></li>
 </ul>
 <ul>
-<li><a href="http://xahlee.info/linux/linux_index.html">Linux</a></li>
-<li><a href="http://xahlee.info/perl-python/index.html">Perl Python Ruby</a></li>
-<li><a href="http://xahlee.info/js/js.html">JavaScript</a></li>
-<li><a href="http://xahlee.info/java-a-day/java.html">Java</a></li>
-<li><a href="http://xahlee.info/php/index.html">PHP</a></li>
-<li><a href="http://xahlee.info/js/index.html">HTML</a></li>
-<li><a href="http://xahlee.info/js/css_index.html">CSS</a></li>
-<li><a href="http://ergoemacs.org/emacs/emacs.html">Emacs</a></li>
-<li><a href="http://xahlee.info/comp/comp_lang.html">Syntax</a></li>
-<li><a href="http://xahlee.info/comp/unicode_index.html">Symbology</a></li>
-<li><a href="http://xahlee.info/kbd/keyboarding.html">Keyboard ⌨</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?js.html">JavaScript</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?index.html">HTML</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?css_index.html">CSS</a></li>
 </ul>
-<form action="http://www.google.com" id="cse-search-box"> <div> <input type="hidden" name="cx" value="partner-pub-5125343095650532:1853288892" /> <input type="hidden" name="ie" value="UTF-8" /> <input type="text" name="q" size="20" /> <input type="submit" name="sa" value="Search" /> </div> </form><script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>
-</nav>"""),
+<ul>
+<li><a href="[-:_./A-Za-z0-9]*?linux_index.html">Linux</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?index.html">Perl Python Ruby</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?java.html">Java</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?index.html">PHP</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?http://ergoemacs.org/emacs/emacs.html">Emacs</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?comp_lang.html">Syntax</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?unicode_index.html">Unicode 😸 ♥</a></li>
+<li><a href="[-:_./A-Za-z0-9]*?keyboarding.html">Keyboard ⌨</a></li>
+</ul>
+<button""", re.U|re.M|re.DOTALL),
 
-# (re.compile(ur"""<img src="([^"]+?)" alt="([^"]+?)" width="([0-9]+)" height="([0-9]+)">
-# <figcaption>""", re.U|re.M),
-# ur"""<img src="\1" alt="\2" width="\3" height="\4" />
-# <figcaption>"""),
+r"""<nav id="t5">
+<button"""),
 
-# (re.compile(ur"""title="(\d+)x(\d+)">❐</a>""",re.U|re.M),
-# ur"""title="\1×\2">❐</a>"""),
 ]
 
 def replace_string_in_file(file_path):
@@ -60,8 +56,14 @@ def replace_string_in_file(file_path):
    backup_fname = file_path + "~re~"
 
    # print "reading:", file_path
-   input_file = open(file_path, "rb")
-   file_content = str(input_file.read(), "utf-8")
+   input_file = open(file_path, "r", encoding="utf-8")
+
+   try:
+      file_content = input_file.read()
+   except UnicodeDecodeError:
+      print("UnicodeDecodeError:{:s}".format(input_file))
+      return
+
    input_file.close()
 
    num_replaced = 0
@@ -72,7 +74,7 @@ def replace_string_in_file(file_path):
       file_content = output_text
 
    if (num_replaced > 0):
-      print(("◆ %d %s" % (num_replaced, file_path.replace("/cygdrive/c/Users/h3", "~")) ))
+      print(("◆ %d %s" % (num_replaced, file_path) ))
 
       shutil.copy2(file_path, backup_fname)
       output_file = open(file_path, "r+b")

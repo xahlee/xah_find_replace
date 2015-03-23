@@ -10,29 +10,46 @@ import datetime
 file_list = [
 ]
 
-input_dir = "/home/xah/web/wordyenglish_com/"
-input_dir = "/home/xah/web/wordyenglish_com/titus/"
-input_dir = "/home/xah/web/ergoemacs_org/"
-input_dir = "/home/xah/web/"
+input_dir = "/home/xah/web/xahlee_info"
 
 input_dir = os.path.normpath(input_dir)
 
 min_level = 1 # files and dirs inside input_dir are level 1.
-max_level = 6 # inclusive
+max_level = 7 # inclusive
 
-print_file_name_has_no_change = False
-
-# • remember to remove js/ex dir
-# • many pages don't have double ads
+print_filename_when_no_change = False
 
 find_replace_list = [
 (
 
-"""<input type="hidden" name="ie" value="UTF-8" /> <input type="text" name="q" size="55" /> <input type="submit" name="sa" value="Search" /> </div> </form> <script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>ttttttttttttttttttttt""",
+"""<nav id="t5">
+<ul>
+<li><a href="../SpecialPlaneCurves_dir/specialPlaneCurves.html">Curves</a></li>
+<li><a href="../surface/gallery.html">Surfaces</a></li>
+<li><a href="../Wallpaper_dir/c0_WallPaper.html">Wallpaper Groups</a></li>
+<li><a href="../MathGraphicsGallery_dir/mathGraphicsGallery.html">Gallery</a></li>
+<li><a href="../math_software/mathPrograms.html">Math Software</a></li>
+<li><a href="../3d/index.html">POV-Ray</a></li>
+</ul>
+<ul>
+<li><a href="js.html">JavaScript</a></li>
+<li><a href="index.html">HTML</a></li>
+<li><a href="css_index.html">CSS</a></li>
+</ul>
+<ul>
+<li><a href="../linux/linux_index.html">Linux</a></li>
+<li><a href="../perl-python/index.html">Perl Python Ruby</a></li>
+<li><a href="../java-a-day/java.html">Java</a></li>
+<li><a href="../php/index.html">PHP</a></li>
+<li><a href="http://ergoemacs.org/emacs/emacs.html">Emacs</a></li>
+<li><a href="../comp/comp_lang.html">Syntax</a></li>
+<li><a href="../comp/unicode_index.html">Unicode 😸 ♥</a></li>
+<li><a href="../kbd/keyboarding.html">Keyboard ⌨</a></li>
+</ul>
+<button""",
 
-"""<input type="hidden" name="ie" value="UTF-8" /> <input type="text" name="q" size="20" /> <input type="submit" name="sa" value="Search" /> </div> </form><script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>""",
-
-# """<input type="hidden" name="ie" value="UTF-8" /> <input type="text" name="q" size="55" /> <input type="submit" name="sa" value="Search" /> </div> </form> <script src="http://www.google.com/coop/cse/brand?form=cse-search-box&amp;lang=en"></script>""",
+"""<nav id="t5">
+<button"""
 
 ),
 
@@ -45,12 +62,16 @@ for x in find_replace_list:
         sys.exit("Error: replacement pair has more than 2 elements. Probably missing a comma.")
 
 def replace_string_in_file(file_path):
-    "Replaces all findStr by repStr in file file_path"
+    "Replaces find/replace pairs in find_replace_list in file_path"
     backup_fname = file_path + "~bk~"
 
-    # print "reading:", file_path
     input_file = open(file_path, "r", encoding="utf-8")
-    file_content = input_file.read()
+    try:
+        file_content = input_file.read()
+    except UnicodeDecodeError:
+        print("UnicodeDecodeError:{:s}".format(input_file))
+        return
+
     input_file.close()
 
     num_replaced = 0
@@ -66,7 +87,7 @@ def replace_string_in_file(file_path):
         output_file.write(output_text)
         output_file.close()
     else:
-        if print_file_name_has_no_change == True:
+        if print_filename_when_no_change == True:
             print("no change:", file_path)
 
 #────────── ────────── ────────── ────────── ──────────
