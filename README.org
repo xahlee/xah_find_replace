@@ -10,8 +10,11 @@ Features:
 - with regex or literal replacement.
 - work on list of files or all files in a directory or sub-directory.
 - Can specify a range of depth level of a directory.
+- Works with Unicode UTF-8 encoded files.
 
 To use, open the script, and edit the input path, and other parameters. These script do not use command line args by design. This might change in the future.
+
+For tutorial of python and perl, see: http://xahlee.info/perl-python/index.html
 
 For emacs lisp version, see
 https://github.com/xahlee/xah_file_util.el/blob/master/xah_file_util.el
