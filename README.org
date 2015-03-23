@@ -11,7 +11,7 @@ Features:
 - work on list of files or all files in a directory or sub-directory.
 - Can specify a range of depth level of a directory.
 
-To use, open the script, and edit the input path, and other parameters. These script does not use command line args by design. This might change in the future.
+To use, open the script, and edit the input path, and other parameters. These script do not use command line args by design. This might change in the future.
 
 For emacs lisp version, see
 https://github.com/xahlee/xah_file_util.el/blob/master/xah_file_util.el
