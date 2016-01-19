@@ -2,9 +2,9 @@
 # Python 3
 
 # change all files in a dir.
-# using mulitple regex/replace pairs
+# with mulitple regex/replace pairs
 
-# last used at least: 2015-03-23
+# last used at least: 2016-01-19
 
 import os, sys, shutil, re
 import datetime
@@ -13,41 +13,23 @@ import datetime
 file_list = [
 ]
 
-input_dir = "/home/xah/web/xahlee_info"
+input_dir = "/home/xah/web/wordyenglish_com"
 
 min_level = 1 # files and dirs inside input_dir are level 1.
-max_level = 7 # inclusive
+max_level = 9 # inclusive
 
 find_replace_list = [
 
-(re.compile(r"""<nav id="t5">
-<ul>
-<li><a href="[-:_./A-Za-z0-9]*?specialPlaneCurves.html">Curves</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?gallery.html">Surfaces</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?c0_WallPaper.html">Wallpaper Groups</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?mathGraphicsGallery.html">Gallery</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?mathPrograms.html">Math Software</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?index.html">POV-Ray</a></li>
-</ul>
-<ul>
-<li><a href="[-:_./A-Za-z0-9]*?js.html">JavaScript</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?index.html">HTML</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?css_index.html">CSS</a></li>
-</ul>
-<ul>
-<li><a href="[-:_./A-Za-z0-9]*?linux_index.html">Linux</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?index.html">Perl Python Ruby</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?java.html">Java</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?index.html">PHP</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?http://ergoemacs.org/emacs/emacs.html">Emacs</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?comp_lang.html">Syntax</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?unicode_index.html">Unicode 😸 ♥</a></li>
-<li><a href="[-:_./A-Za-z0-9]*?keyboarding.html">Keyboard ⌨</a></li>
-</ul>
-<button""", re.U|re.M|re.DOTALL),
+   # find and replace pairs here
 
-r"""<nav id="t5">
-<button"""),
+(re.compile(r"""<section class="word-α">
+<p class="wd">([^<]+?)</p>
+""", re.U|re.M|re.DOTALL),
+ r"""<section class="word-α">
+<h3 class="wd">\1</h3>
+"""),
+
+   # more find and replace pairs here
 
 ]
 

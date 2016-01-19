@@ -50,8 +50,8 @@ my $folderPath = q[/Users/xah/web/UnixResource_dir/xx];
 my $backupFolderPath = q[/Users/xah/xxxb];
 
 my %findReplaceH = (
-q[xah]=>q[fgcr],
-q[that]=>q[hccg],
+q[find string here] => q[replace string here],
+q[more find string here] => q[more replace string here],
 );
 
 # $useRegexQ has values 1 or 0. If 1, inteprets the pairs in %findReplaceH

@@ -10,48 +10,22 @@ import datetime
 file_list = [
 ]
 
-input_dir = "/home/xah/web/xahlee_info"
+input_dir = "/home/xah/web/ergoemacs_org/emacs_manual/"
 
 input_dir = os.path.normpath(input_dir)
 
 min_level = 1 # files and dirs inside input_dir are level 1.
-max_level = 7 # inclusive
+max_level = 9 # inclusive
 
 print_filename_when_no_change = False
 
 find_replace_list = [
 (
-
-"""<nav id="t5">
-<ul>
-<li><a href="../SpecialPlaneCurves_dir/specialPlaneCurves.html">Curves</a></li>
-<li><a href="../surface/gallery.html">Surfaces</a></li>
-<li><a href="../Wallpaper_dir/c0_WallPaper.html">Wallpaper Groups</a></li>
-<li><a href="../MathGraphicsGallery_dir/mathGraphicsGallery.html">Gallery</a></li>
-<li><a href="../math_software/mathPrograms.html">Math Software</a></li>
-<li><a href="../3d/index.html">POV-Ray</a></li>
-</ul>
-<ul>
-<li><a href="js.html">JavaScript</a></li>
-<li><a href="index.html">HTML</a></li>
-<li><a href="css_index.html">CSS</a></li>
-</ul>
-<ul>
-<li><a href="../linux/linux_index.html">Linux</a></li>
-<li><a href="../perl-python/index.html">Perl Python Ruby</a></li>
-<li><a href="../java-a-day/java.html">Java</a></li>
-<li><a href="../php/index.html">PHP</a></li>
-<li><a href="http://ergoemacs.org/emacs/emacs.html">Emacs</a></li>
-<li><a href="../comp/comp_lang.html">Syntax</a></li>
-<li><a href="../comp/unicode_index.html">Unicode 😸 ♥</a></li>
-<li><a href="../kbd/keyboarding.html">Keyboard ⌨</a></li>
-</ul>
-<button""",
-
-"""<nav id="t5">
-<button"""
-
+"""find string here""",
+"""replace string here""",
 ),
+
+# more find/replace pairs here
 
 ]
 
