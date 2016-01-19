@@ -11,9 +11,11 @@ import datetime
 
 # if this this is not empty, then only these files will be processed
 file_list = [
+    # "/home/xah/web/ergoemacs_org/emacs/emacs.html", # example
 ]
 
-input_dir = "/home/xah/web/wordyenglish_com"
+# must be full path
+input_dir = "/home/xah/web/"
 
 min_level = 1 # files and dirs inside input_dir are level 1.
 max_level = 9 # inclusive
@@ -22,16 +24,17 @@ find_replace_list = [
 
    # find and replace pairs here
 
-(re.compile(r"""<section class="word-α">
+   (re.compile(r"""<section class="word-α">
 <p class="wd">([^<]+?)</p>
 """, re.U|re.M|re.DOTALL),
- r"""<section class="word-α">
+    r"""<section class="word-α">
 <h3 class="wd">\1</h3>
 """),
 
    # more find and replace pairs here
-
 ]
+
+##################################################
 
 def replace_string_in_file(file_path):
    "Replaces all strings by regex in find_replace_list at file_path."
@@ -74,7 +77,7 @@ def replace_string_in_file(file_path):
 #       if re.search(r".+\.html$", child, re.U) and os.path.isfile(current_dir + "/" + child):
 #          replace_string_in_file(current_dir + "/" + child)
 
-# ────────── ────────── ────────── ────────── ──────────
+##################################################
 
 print(datetime.datetime.now())
 print("Input Dir:", input_dir)
@@ -94,7 +97,5 @@ else:
                 if (re.search(r"\.html$", fName, re.U)):
                     replace_string_in_file(dirPath + os.sep + fName)
                     # print ("level %d,  %s" % (curFileLevel, os.path.join(dirPath, fName)))
-
-# os.path.walk(input_dir, process_file, "dummy")
 
 print("Done.")

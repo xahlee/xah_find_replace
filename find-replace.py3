@@ -8,9 +8,11 @@ import datetime
 
 # if this this is not empty, then only these files will be processed
 file_list = [
+    # "/home/xah/web/ergoemacs_org/emacs/emacs.html", # example
 ]
 
-input_dir = "/home/xah/web/ergoemacs_org/emacs_manual/"
+# must be full path
+input_dir = "/home/xah/web/ergoemacs_org/"
 
 input_dir = os.path.normpath(input_dir)
 
@@ -20,12 +22,12 @@ max_level = 9 # inclusive
 print_filename_when_no_change = False
 
 find_replace_list = [
-(
-"""find string here""",
-"""replace string here""",
-),
+    (
+        """find string here""",
+        """replace string here""",
+    ),
 
-# more find/replace pairs here
+    # more find/replace pairs here
 
 ]
 
