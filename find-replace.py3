@@ -1,20 +1,19 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
-# find & replace strings in a dir
+# find & replace mutiple pairs of strings in a dir or list of files
 
 import os, sys, shutil, re
 import datetime
 
-# if this this is not empty, then only these files will be processed
+# if this list is not empty, then only these files will be processed
+# each must be full path to a file, not dir
 file_list = [
     # "/home/xah/web/ergoemacs_org/emacs/emacs.html", # example
 ]
 
 # must be full path
-input_dir = "/home/xah/web/ergoemacs_org/"
-
-input_dir = os.path.normpath(input_dir)
+input_dir = "/home/xah/web/"
 
 min_level = 1 # files and dirs inside input_dir are level 1.
 max_level = 9 # inclusive
@@ -23,15 +22,25 @@ print_filename_when_no_change = False
 
 find_replace_list = [
     (
-        """find string here""",
-        """replace string here""",
+        """find1""",
+        """replace1""",
     ),
 
-    # more find/replace pairs here
+    (
+        """find2""",
+        """replace2""",
+    ),
+
+    (
+        """find3""",
+        """replace3""",
+    ),
 
 ]
 
-
+##################################################
+
+input_dir = os.path.normpath(input_dir)
 
 for x in find_replace_list:
     if len(x) != 2:
@@ -66,7 +75,7 @@ def replace_string_in_file(file_path):
         if print_filename_when_no_change == True:
             print("no change:", file_path)
 
-#────────── ────────── ────────── ────────── ──────────
+##################################################
 
 print(datetime.datetime.now())
 print("Input Dir:", input_dir)
