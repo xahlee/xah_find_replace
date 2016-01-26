@@ -9,11 +9,15 @@ import datetime
 # if this list is not empty, then only these files will be processed
 # each must be full path to a file, not dir
 file_list = [
-    # "/home/xah/web/ergoemacs_org/emacs/emacs.html", # example
+
+    # "/home/john/web/emacs/emacs.html",
+    # "/home/john/web/js/index.html",
+    # "/home/john/web/doc/food.html",
+
 ]
 
 # must be full path
-input_dir = "/home/xah/web/"
+input_dir = "/home/john/Documents/"
 
 min_level = 1 # files and dirs inside input_dir are level 1.
 max_level = 9 # inclusive
@@ -22,18 +26,18 @@ print_filename_when_no_change = False
 
 find_replace_list = [
     (
-        """find1""",
-        """replace1""",
+        """find1111""",
+        """replace11111""",
     ),
 
     (
-        """find2""",
-        """replace2""",
+        """find2222""",
+        """replace2222""",
     ),
 
     (
-        """find3""",
-        """replace3""",
+        """find3333""",
+        """replace3333""",
     ),
 
 ]
