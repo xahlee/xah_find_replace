@@ -1,17 +1,20 @@
--*- coding: utf-8 -*-
-
 Several general and customizable find/replace scripts similar to sed/awk/grep.
 
 - find-replace.pl → perl version
 - find-replace.py3 → python 3, no regex
 - find_replace_regex.py3  → python 3, with regex
 
+This is a tool for programers.
+
+To use, open the script, and edit the input path, and other parameters. These scripts do not use command line args by design, because when the string is long, it's easier to work with the script.
+
 Features:
 
 - Multiple find/replace pairs.
 - with regex or literal replacement.
-- work on list of files or all files in a directory or sub-directory.
+- Find and replace strings can be multi-lines.
+- Find and replace strings can contain unicode characters.
+- work on list of files, or all files in a directory or sub-directory.
 - Can specify a range of depth level of a directory.
 - Works with Unicode UTF-8 encoded files.
 
-To use, open the script, and edit the input path, and other parameters. These scripts do not use command line args by design, because when the string is long, it's easier to work with the script.
