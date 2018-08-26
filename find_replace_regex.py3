@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 # Python 3
 
-# change all files in a dir.
-# with mulitple regex/replace pairs
+# 2018-08-24
 
-# last used at least: 2016-01-19
+# change all files in a dir by 1 or more regex/replace pairs
 
 import os, sys, shutil, re
 import datetime
@@ -15,33 +13,30 @@ file_list = [
 ]
 
 # must be full path
-input_dir = "/home/xah/web/"
+input_dir = "/Users/xah/xx_manual/"
+
+file_extension_regex = r"\.html$"
 
 min_level = 1 # files and dirs inside input_dir are level 1.
 max_level = 9 # inclusive
 
+do_backup = True
+backup_suffix = "~~"
+
+# find and replace pairs here. Each is a 2-tuple. first element is regex object, second is replace string
 find_replace_list = [
-
-   # find and replace pairs here
-
-   (re.compile(r"""<section class="word-α">
-<p class="wd">([^<]+?)</p>
-""", re.U|re.M|re.DOTALL),
-    r"""<section class="word-α">
-<h3 class="wd">\1</h3>
-"""),
+   (re.compile(r'''<meta name="[A-Za-z]+" content="[-.,0-9]+">''', re.U|re.M|re.DOTALL),
+    r''),
 
    # more find and replace pairs here
 ]
 
 ##################################################
 
-def replace_string_in_file(file_path):
-   "Replaces all strings by regex in find_replace_list at file_path."
-   backup_fname = file_path + "~re~"
+def replace_string_in_file(fpath):
+   "Replaces all strings by regex in find_replace_list at fpath."
 
-   # print "reading:", file_path
-   input_file = open(file_path, "r", encoding="utf-8")
+   input_file = open(fpath, "r", encoding="utf-8")
 
    try:
       file_content = input_file.read()
@@ -59,23 +54,17 @@ def replace_string_in_file(file_path):
       file_content = output_text
 
    if (num_replaced > 0):
-      print(("◆ %d %s" % (num_replaced, file_path) ))
+      print(("◆ changed %d %s" % (num_replaced, fpath) ))
 
-      shutil.copy2(file_path, backup_fname)
-      output_file = open(file_path, "r+b")
+      if do_backup:
+         shutil.copy2(fpath, fpath + backup_suffix)
+
+      output_file = open(fpath, "r+b")
       output_file.read() # we do this way to preserve file creation date
       output_file.seek(0)
       output_file.write(output_text.encode("utf-8"))
       output_file.truncate()
       output_file.close()
-
-#      os.rename(file_path, backup_fname)
-#      os.rename(tempName, file_path)
-
-# def process_file(dummy, current_dir, file_list):
-#    for child in file_list:
-#       if re.search(r".+\.html$", child, re.U) and os.path.isfile(current_dir + "/" + child):
-#          replace_string_in_file(current_dir + "/" + child)
 
 ##################################################
 
@@ -94,8 +83,7 @@ else:
         curFileLevel = curDirLevel + 1
         if min_level <= curFileLevel <= max_level:
             for fName in fileList:
-                if (re.search(r"\.html$", fName, re.U)):
+                if (re.search(file_extension_regex, fName, re.U)):
                     replace_string_in_file(dirPath + os.sep + fName)
-                    # print ("level %d,  %s" % (curFileLevel, os.path.join(dirPath, fName)))
 
 print("Done.")

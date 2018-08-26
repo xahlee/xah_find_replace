@@ -10,28 +10,30 @@ import datetime
 # each must be full path to a file, not dir
 file_list = [
 
+# "/Users/xah/web/ergoemacs_org/xahemacs.css",
+# "/Users/xah/web/wordyenglish_com/wordy.css",
+
 ]
 
-# must be full path
-INPUT_DIR = "/Users/xah/web/ergoemacs_org/"
+# must be full path. dir can end with slash or no
+INPUT_DIR = "/Users/xah/xx_manual/"
 
 MIN_LEVEL = 1 # files and dirs inside INPUT_DIR are level 1.
-MAX_LEVEL = 6 # inclusive
+MAX_LEVEL = 5 # inclusive
 
 FILE_NAME_REGEX = r"\.html$"
+# FILE_NAME_REGEX = r"\.css$"
 
 PRINT_FILENAME_WHEN_NO_CHANGE = False
 
 FIND_REPLACE_LIST = [
 
-# <a href="act1p2.html" title="previous">←</a>
-
 (
-'''<div class="buyxahemacs97449">
-Liket it? Put $5 at''',
-'''<div class="buyxahemacs97449">
-Liket it? Put $1 at''',
-),
+'''some long string''',
+'''some replace string''',
+) ,
+
+# more pair here
 
 ]
 
@@ -87,8 +89,9 @@ else:
     for dirPath, subdirList, fileList in os.walk(INPUT_DIR):
         curDirLevel = dirPath.count( os.sep) - INPUT_DIR.count( os.sep)
         curFileLevel = curDirLevel + 1
-        if (MIN_LEVEL <= curFileLevel) and (curFileLevel <= MAX_LEVEL) and (not re.search(r"emacs_manual|\
-REC-SVG11-20110816|\
+# emacs_manual|\
+
+        if (MIN_LEVEL <= curFileLevel) and (curFileLevel <= MAX_LEVEL) and (not re.search(r"REC-SVG11-20110816|\
 clojure-doc-1.8|\
 ocaml_doc|\
 css3_spec_bg|\
