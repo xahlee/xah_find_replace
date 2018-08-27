@@ -9,7 +9,8 @@ import (
 )
 
 // inDir is dir to start. must be full path
-var inDir = "/Users/xah/xx_manual/"
+// var inDir = "/Users/xah/xx_manual/"
+const inDir = "/Users/xah/web/xahlee_info/"
 
 var dirsToSkip = []string{".git"}
 
@@ -28,10 +29,13 @@ var frPairs = []frPair{
 
 // ext is file extension, with the dot.
 // only these are searched
-const ext = ".html"
-const backupSuffix = "~~"
-const doBackup = false
+const fnameRegex = `^blog.+\.html$`
+
 const writeToFile = false
+
+// doBackup. when writeToFile is also false, no backup is made
+const doBackup = true
+const backupSuffix = "~~"
 
 // pass return false if x equals any of y
 func pass(x string, y []string) bool {
@@ -62,13 +66,13 @@ func doFile(path string) error {
 
 	if changed {
 		fmt.Printf("changed: %v\n", path)
-		if doBackup {
-			err := os.Rename(path, path+backupSuffix)
-			if err != nil {
-				panic(err)
-			}
-		}
 		if writeToFile {
+			if doBackup {
+				err := os.Rename(path, path+backupSuffix)
+				if err != nil {
+					panic(err)
+				}
+			}
 			err2 := ioutil.WriteFile(path, content, 0644)
 			if err2 != nil {
 				panic("write file problem")
@@ -86,17 +90,19 @@ func main() {
 			fmt.Printf("error 「%v」 at a path 「%q」\n", errX, pathX)
 			return errX
 		}
-
 		if infoX.IsDir() {
 			if !pass(filepath.Base(pathX), dirsToSkip) {
 				return filepath.SkipDir
 			}
 		} else {
-			if filepath.Ext(pathX) == ext {
+			var x, err = regexp.MatchString(fnameRegex, filepath.Base(pathX))
+			if err != nil {
+				panic("stupid MatchString error 59767")
+			}
+			if x {
 				doFile(pathX)
 			}
 		}
-
 		return nil
 	}
 

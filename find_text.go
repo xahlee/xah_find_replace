@@ -9,11 +9,11 @@ import (
 )
 
 // inDir is dir to start. must be full path
-var inDir = "/Users/xah/xx_manual/"
+var inDir = "/Users/xah/web/wordyenglish_com/"
 
 var dirsToSkip = []string{".git"}
 
-var findStr = ` tag`
+var findStr = `panel_82497`
 
 // ext is file extension, with the dot.
 // only these are searched
