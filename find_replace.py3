@@ -17,20 +17,18 @@ file_list = [
 
 # must be full path. dir can end with slash or no
 INPUT_DIR = "/Users/xah/xx_manual/"
-
 MIN_LEVEL = 1 # files and dirs inside INPUT_DIR are level 1.
 MAX_LEVEL = 5 # inclusive
-
 FILE_NAME_REGEX = r"\.html$"
-# FILE_NAME_REGEX = r"\.css$"
-
 PRINT_FILENAME_WHEN_NO_CHANGE = False
+BACKUP_FNAME_EXT = '~bk~'
+DO_BACKUP = False
 
 FIND_REPLACE_LIST = [
 
 (
-'''some long string''',
-'''some replace string''',
+'''Sample Function''',
+'''ppppp''',
 ) ,
 
 # more pair here
@@ -47,8 +45,6 @@ for x in FIND_REPLACE_LIST:
 
 def replace_string_in_file(file_path):
     "Replaces find/replace pairs in FIND_REPLACE_LIST in file_path"
-    backup_fname = file_path + '~bk~'
-
     input_file = open(file_path, "r", encoding="utf-8")
     try:
         file_content = input_file.read()
@@ -61,14 +57,15 @@ def replace_string_in_file(file_path):
     num_replaced = 0
     for a_pair in FIND_REPLACE_LIST:
         num_replaced += file_content.count(a_pair[0])
-        output_text = file_content.replace(a_pair[0], a_pair[1])
-        file_content = output_text
+        file_content = file_content.replace(a_pair[0], a_pair[1])
 
     if num_replaced > 0:
         print("◆ ", num_replaced, " ", file_path.replace(os.sep, "/"))
-        shutil.copy2(file_path, backup_fname)
+        if DO_BACKUP:
+            backup_fname = file_path + BACKUP_FNAME_EXT
+            os.rename(file_path, backup_fname)
         output_file = open(file_path, "w")
-        output_file.write(output_text)
+        output_file.write(file_content)
         output_file.close()
     else:
         if PRINT_FILENAME_WHEN_NO_CHANGE == True:

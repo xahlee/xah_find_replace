@@ -5,18 +5,11 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
-	// "regexp"
+	"regexp"
 )
 
 // inDir is dir to start. must be full path
-const inDir = "/Users/xah/xx_manual/"
-
-// ext is file extension, with the dot. only these are searched
-const ext = ".html"
-const backupSuffix = "~~"
-const writeToFile = false
-const doBackup = false
+var inDir = "/Users/xah/xx_manual/"
 
 var dirsToSkip = []string{".git"}
 
@@ -33,6 +26,13 @@ var frPairs = []frPair{
 	},
 }
 
+// ext is file extension, with the dot.
+// only these are searched
+const ext = ".html"
+const backupSuffix = "~~"
+const doBackup = false
+const writeToFile = false
+
 // pass return false if x equals any of y
 func pass(x string, y []string) bool {
 	for _, v := range y {
@@ -44,18 +44,18 @@ func pass(x string, y []string) bool {
 }
 
 func doFile(path string) error {
-	contentBytes, er := ioutil.ReadFile(path)
+	content, er := ioutil.ReadFile(path)
 	if er != nil {
 		panic(er)
 	}
 
-	var content = string(contentBytes)
-
+	// var contentOriginal = content
 	var changed = false
 	for _, pair := range frPairs {
-		var found = strings.Index(content, pair.fs)
-		if found != -1 {
-			content = strings.Replace(content, pair.fs, pair.rs, -1)
+		var re = regexp.MustCompile(regexp.QuoteMeta(pair.fs))
+		var matched = re.Match(content)
+		if matched {
+			content = re.ReplaceAllLiteral(content, []byte(pair.rs))
 			changed = true
 		}
 	}
@@ -69,7 +69,7 @@ func doFile(path string) error {
 			}
 		}
 		if writeToFile {
-			err2 := ioutil.WriteFile(path, []byte(content), 0644)
+			err2 := ioutil.WriteFile(path, content, 0644)
 			if err2 != nil {
 				panic("write file problem")
 			}
