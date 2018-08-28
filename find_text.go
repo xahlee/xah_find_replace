@@ -6,18 +6,18 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"time"
 )
 
 // inDir is dir to start. must be full path
-var inDir = "/Users/xah/web/wordyenglish_com/"
+var inDir = "/Users/xah/web/xahlee_info/comp/"
 
 var dirsToSkip = []string{".git"}
 
-var findStr = `panel_82497`
+var findStr = `array_index_start_07550`
 
-// ext is file extension, with the dot.
-// only these are searched
-var ext = ".html"
+// fnameRegex. only these are searched
+const fnameRegex = `\.html$`
 
 // number of chars (actually bytes) to show before the found string
 var before = 100
@@ -75,32 +75,43 @@ func doFile(path string) error {
 }
 
 func main() {
-	// need to print date, find string, rep string, and root dir, extension
+
+	scriptName, errPath := os.Executable()
+	if errPath != nil {
+		panic(errPath)
+	}
+
+	fmt.Printf("%v\n", time.Now())
+	fmt.Printf("Script: %v\n", filepath.Base(scriptName))
+	fmt.Printf("in dir: %v\n", inDir)
+	fmt.Printf("file regex filter: %v\n", fnameRegex)
+	fmt.Printf("Find string: 「%v」\n", findStr)
+	fmt.Println()
 
 	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
-
 		// first thing to do, check error. and decide what to do about it
 		if errX != nil {
 			fmt.Printf("error 「%v」 at a path 「%q」\n", errX, pathX)
 			return errX
 		}
-
 		if infoX.IsDir() {
 			if !pass(filepath.Base(pathX), dirsToSkip) {
 				return filepath.SkipDir
 			}
 		} else {
-			if filepath.Ext(pathX) == ext {
+			var x, err = regexp.MatchString(fnameRegex, filepath.Base(pathX))
+			if err != nil {
+				panic("stupid MatchString error 59767")
+			}
+			if x {
 				doFile(pathX)
 			}
 		}
-
 		return nil
 	}
-
 	err := filepath.Walk(inDir, pWalker)
-
 	if err != nil {
 		fmt.Printf("error walking the path %q: %v\n", inDir, err)
 	}
+	fmt.Println("Done.")
 }

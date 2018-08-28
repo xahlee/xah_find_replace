@@ -7,76 +7,34 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 )
 
-// inDir is dir to start. must be full path
-// const inDir = "/Users/xah/xx_manual/"
-const inDir = "/Users/xah/web/wordyenglish_com/"
-
-const fnameRegex = `^blog.+\.html$`
-
-const writeToFile = false
-
-// doBackup. when writeToFile is also false, no backup is made
-const doBackup = true
-const backupSuffix = "~~"
+const (
+	// inDir is dir to start. must be full path
+	inDir        = "/Users/xah/xx_manual/"
+	fnameRegex   = `\.html$`
+	writeToFile  = false
+	doBackup     = true
+	backupSuffix = "~~"
+)
 
 var dirsToSkip = []string{".git"}
+
+var frPairs = []frPair{
+
+	frPair{
+		fs: `emacs`,
+		rs: `hhhhhhh`,
+	},
+}
 
 type frPair struct {
 	fs string // find string
 	rs string // replace string
 }
 
-var frPairs = []frPair{
-
-	frPair{
-		fs: `tttttttttttttthhhhhtht71317<aside id="aside-right-89129">`,
-		rs: `<aside id="aside-right-89129">
-<ul>
-<li><a href="blog.html">Wordy Blog</a></li>
-<li><a href="blog_past_2016-08.html">2016-08</a></li>
-<li><a href="blog_past_2016-04.html">2016-04</a></li>
-<li><a href="blog_past_2016-01.html">2016-01</a></li>
-<li><a href="blog_past_2015-10.html">2015-10</a></li>
-<li><a href="blog_past_2015-09.html">2015-09</a></li>
-<li><a href="blog_past_2015-04.html">2015-04</a></li>
-<li><a href="blog_past_2015-01.html">2015-01</a></li>
-<li><a href="blog_past_2014-11.html">2014-11</a></li>
-<li><a href="blog_past_2014-10.html">2014-10</a></li>
-<li><a href="blog_past_2014-09.html">2014-09</a></li>
-<li><a href="blog_past_2014-07.html">2014-07</a></li>
-<li><a href="blog_past_2014-05.html">2014-05</a></li>
-<li><a href="blog_past_2014-03.html">2014-03</a></li>
-<li><a href="blog_past_2014-01.html">2014-01</a></li>
-<li><a href="blog_past_2013-12.html">2013-12</a></li>
-<li><a href="blog_past_2013-11.html">2013-11</a></li>
-<li><a href="blog_past_2013-10.html">2013-10</a></li>
-<li><a href="blog_past_2013-09.html">2013-09</a></li>
-<li><a href="blog_past_2013-08.html">2013-08</a></li>
-<li><a href="blog_past_2013-07.html">2013-07</a></li>
-<li><a href="blog_past_2013-06.html">2013-06</a></li>
-<li><a href="blog_past_2013-04.html">2013-04</a></li>
-<li><a href="blog_past_2013-03.html">2013-03</a></li>
-<li><a href="blog_past_2013-02.html">2013-02</a></li>
-<li><a href="blog_past_2013-01.html">2013-01</a></li>
-<li><a href="blog_past_2012-12.html">2012-12</a></li>
-<li><a href="blog_past_2012-11.html">2012-11</a></li>
-<li><a href="blog_past_2012-10.html">2012-10</a></li>
-<li><a href="blog_past_2012-09.html">2012-09</a></li>
-<li><a href="blog_past_2012-08.html">2012-08</a></li>
-<li><a href="blog_past_2012-07.html">2012-07</a></li>
-<li><a href="blog_past_2012-04.html">2012-04</a></li>
-<li><a href="blog_past_2012-02.html">2012-02</a></li>
-<li><a href="blog_past_2011-12.html">2011-12</a></li>
-<li><a href="blog_past_2011-11.html">2011-11</a></li>
-<li><a href="blog_past_2011-10.html">2011-10</a></li>
-<li><a href="blog_past_2011-06.html">2011-06</a></li>
-<li><a href="blog_past_2011-08.html">2011-08</a></li>
-<li><a href="blog_past_2011-09.html">2011-09</a></li>
-</ul>`,
-	},
-}
+// ------------------------------------------------------------
 
 // pass return false if x equals any of y
 func pass(x string, y []string) bool {
@@ -111,7 +69,7 @@ func doFile(path string) error {
 					panic(err)
 				}
 			}
-			err2 := ioutil.WriteFile(path, content, 0644)
+			err2 := ioutil.WriteFile(path, []byte(content), 0644)
 			if err2 != nil {
 				panic("write file problem")
 			}
@@ -121,7 +79,19 @@ func doFile(path string) error {
 }
 
 func main() {
-	// need to print date, find string, rep string, and root dir, extension
+	scriptName, errPath := os.Executable()
+	if errPath != nil {
+		panic(errPath)
+	}
+
+	fmt.Printf("%v\n", time.Now())
+	fmt.Printf("Script: %v\n", filepath.Base(scriptName))
+	fmt.Printf("In dir: %v\n", inDir)
+	fmt.Printf("File regex filter: %v\n", fnameRegex)
+	fmt.Printf("Write to file: %v\n", writeToFile)
+	fmt.Printf("Do backup: %v\n", doBackup)
+	fmt.Printf("Find replace pairs: 「%#v」\n", frPairs)
+	fmt.Println()
 
 	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
 		if errX != nil {
