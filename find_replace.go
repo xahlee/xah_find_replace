@@ -12,7 +12,7 @@ import (
 
 const (
 	// inDir is dir to start. must be full path
-	inDir        = "/Users/xah/xx_manual/"
+	inDir        = "/Users/xah/web/ergoemacs_org/"
 	fnameRegex   = `\.html$`
 	writeToFile  = false
 	doBackup     = true
@@ -24,8 +24,8 @@ var dirsToSkip = []string{".git"}
 var frPairs = []frPair{
 
 	frPair{
-		fs: `emacs`,
-		rs: `hhhhhhh`,
+		fs: `Emacs: Display Formfeed ^L as Line`,
+		rs: `Emacs: Show Formfeed ^L as Line`,
 	},
 }
 
@@ -61,7 +61,8 @@ func doFile(path string) error {
 		}
 	}
 	if changed {
-		fmt.Printf("changed: %v\n", path)
+		fmt.Printf("〈%v〉\n", path)
+
 		if writeToFile {
 			if doBackup {
 				err := os.Rename(path, path+backupSuffix)
@@ -117,6 +118,12 @@ func main() {
 	err := filepath.Walk(inDir, pWalker)
 	if err != nil {
 		fmt.Printf("error walking the path %q: %v\n", inDir, err)
+	}
+
+	fmt.Println()
+
+	if !writeToFile {
+		fmt.Printf("Note: writeToFile is %v\n", writeToFile)
 	}
 
 	fmt.Printf("%v\n", "Done.")
