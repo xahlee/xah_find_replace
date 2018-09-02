@@ -10,11 +10,13 @@ import (
 )
 
 // inDir is dir to start. must be full path
-var inDir = "/Users/xah/web/xahlee_info/comp/"
+var inDir = "/Users/xah/web/xahlee_info/"
 
 var dirsToSkip = []string{".git"}
 
-var findStr = `array_index_start_07550`
+// var findStr = `’`
+var findStr = `＆`
+
 
 // fnameRegex. only these are searched
 const fnameRegex = `\.html$`
@@ -49,26 +51,29 @@ func pass(x string, y []string) bool {
 }
 
 func doFile(path string) error {
-	content, er := ioutil.ReadFile(path)
+	var re = regexp.MustCompile(regexp.QuoteMeta(findStr))
 
+	var textBytes, er = ioutil.ReadFile(path)
 	if er != nil {
 		panic(er)
 	}
 
-	var re = regexp.MustCompile(regexp.QuoteMeta(findStr))
-
-	var indexes = re.FindAllIndex(content, -1)
+	var indexes = re.FindAllIndex(textBytes, -1)
 
 	if len(indexes) != 0 {
-		fmt.Println("==================================================")
-		fmt.Printf("%v\n", path)
-		fmt.Printf("total found %v\n", len(indexes))
+		fmt.Println("\n==================================================")
+		fmt.Printf("%v 〈%v〉\n", len(indexes), path)
 
 		for _, k := range indexes {
 			fmt.Println("-------------------------")
-			var start = k[0]
-			var end = k[1]
-			fmt.Printf("%v\n", string(content[max(start-before, 0):min(end+after, len(content))]))
+			var foundStart = k[0]
+			var foundEnd = k[1]
+			var showStart = max(foundStart-before, 0)
+			var showEnd = min(foundEnd+after, len(textBytes))
+
+			fmt.Printf("%s「%s」%s\n", textBytes[showStart:foundStart],
+				textBytes[foundStart:foundEnd],
+				textBytes[foundEnd:showEnd])
 		}
 	}
 	return nil
@@ -81,6 +86,7 @@ func main() {
 		panic(errPath)
 	}
 
+	fmt.Println("-*- coding: utf-8; mode: xah-find-output -*-")
 	fmt.Printf("%v\n", time.Now())
 	fmt.Printf("Script: %v\n", filepath.Base(scriptName))
 	fmt.Printf("in dir: %v\n", inDir)

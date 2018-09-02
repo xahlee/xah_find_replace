@@ -12,9 +12,9 @@ import (
 
 const (
 	// inDir is dir to start. must be full path
-	inDir        = "/Users/xah/web/ergoemacs_org/"
+	inDir        = "/Users/xah/web/xahlee_info/python/"
 	fnameRegex   = `\.html$`
-	writeToFile  = false
+	writeToFile  = true
 	doBackup     = true
 	backupSuffix = "~~"
 )
@@ -24,8 +24,12 @@ var dirsToSkip = []string{".git"}
 var frPairs = []frPair{
 
 	frPair{
-		fs: `Emacs: Display Formfeed ^L as Line`,
-		rs: `Emacs: Show Formfeed ^L as Line`,
+		fs: `<div class="lpanel_h7h547">
+<h4>Python by Example</h4>
+</div>`,
+
+		rs: `<div class="lpanel_h7h547">
+</div>`,
 	},
 }
 
@@ -85,6 +89,7 @@ func main() {
 		panic(errPath)
 	}
 
+	fmt.Println("-*- coding: utf-8; mode: xah-find-output -*-" )
 	fmt.Printf("%v\n", time.Now())
 	fmt.Printf("Script: %v\n", filepath.Base(scriptName))
 	fmt.Printf("In dir: %v\n", inDir)
