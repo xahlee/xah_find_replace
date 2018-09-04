@@ -1,15 +1,5 @@
-// version 2018-09-02
-
 // given a dir, generate a sitemap.xml file for all its html files
-// prints to stdout
-
-// sitemapp file looks like this
-
-// <?xml version="1.0" encoding="UTF-8"?>
-// <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-// <url><loc>http://xaharts.org/xamsi_calku/venus_comb/venus_comb.html</loc></url>
-// <url><loc>http://xaharts.org/xamsi_calku/tusk/tusk.html</loc></url>
-// </urlset>
+// version 2018-09-04
 
 package main
 
@@ -23,8 +13,6 @@ import (
 )
 
 var dirsToProcess = []string{
-
-
 	// "/Users/xah/web/ergoemacs_org",
 	// "/Users/xah/web/wordyenglish_com",
 	// "/Users/xah/web/xaharts_org",
@@ -33,27 +21,25 @@ var dirsToProcess = []string{
 	// "/Users/xah/web/xahmusic_org",
 	// "/Users/xah/web/xahporn_org",
 	// "/Users/xah/web/xahsl_org",
-
 }
 
 var destFname = "sitemap2.xml"
 
 var dirsToSkip = []string{
-
-".git",
-"REC-SVG11-20110816",
-"clojure-doc-1.8",
-"css_2.1_spec",
-"css_transitions",
-"javascript_ecma-262_5.1_2011",
-"javascript_ecma-262_6_2015",
-"javascript_es2016",
-"javascript_es6",
-"jquery_doc",
-"node_api",
-"ocaml_doc",
-"python_doc_2.7.6",
-"python_doc_3.3.3",
+	".git",
+	"REC-SVG11-20110816",
+	"clojure-doc-1.8",
+	"css_2.1_spec",
+	"css_transitions",
+	"javascript_ecma-262_5.1_2011",
+	"javascript_ecma-262_6_2015",
+	"javascript_es2016",
+	"javascript_es6",
+	"jquery_doc",
+	"node_api",
+	"ocaml_doc",
+	"python_doc_2.7.6",
+	"python_doc_3.3.3",
 }
 
 // fnameRegex. only these are searched
@@ -163,29 +149,25 @@ func writeIt(contentX []byte, pathX string) {
 	}
 }
 
-func genSiteMap(dirX string, path2Url []string) (output []byte) {
-
-	output = append(output, (`<?xml version="1.0" encoding="UTF-8"?>` + "\n")...)
+func sitemap(dirX string, path2Url []string) []byte {
+	var output = []byte(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
 	output = append(output, (`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` + "\n")...)
-
 	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
 		if errX != nil {
-			fmt.Printf("error 「%v」 at a path 「%q」\n", errX, pathX)
-			return errX
+			panic(fmt.Sprintf("error 「%v」 at a path 「%q」\n", errX, pathX))
 		}
 		if infoX.IsDir() {
 			if equalAny(filepath.Base(pathX), dirsToSkip) || matchAny(filepath.Base(pathX), dirRegexToSkip) {
 				return filepath.SkipDir
 			}
-
 		} else {
 			var fname = filepath.Base(pathX)
 			var goodExtension, err = regexp.MatchString(fnameRegex, fname)
 			if err != nil {
-				panic("stupid MatchString error 59767")
+				panic("stupid golang MatchString error")
 			}
 			if goodExtension && !matchAny(fname, fnameRegexToSkip) {
-				output = append(output, doFile(pathX,path2Url)...)
+				output = append(output, doFile(pathX, path2Url)...)
 			}
 		}
 		return nil
@@ -199,17 +181,14 @@ func genSiteMap(dirX string, path2Url []string) (output []byte) {
 }
 
 func main() {
-	var outBytes = make([]byte, 0, 2000)
-
+	var outBytes []byte
 	for _, v := range dirsToProcess {
 		var path2Url = getMatched(v, dirPathToUrl)
-
 		outBytes = nil
-		outBytes = genSiteMap(v ,path2Url)
+		outBytes = sitemap(v, path2Url)
 		var saveToPath = filepath.Join(v, destFname)
 		writeIt(outBytes, saveToPath)
 		fmt.Printf("file saved to: %v\n", saveToPath)
 	}
-
 	fmt.Println("Done")
 }
