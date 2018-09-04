@@ -12,25 +12,45 @@ import (
 
 const (
 	// inDir is dir to start. must be full path
-	inDir        = "/Users/xah/web/xahlee_info/python/"
-	fnameRegex   = `\.html$`
-	writeToFile  = true
+	inDir        = "/Users/xah/web/xahmusic_org/music/"
+	fnameRegex   = `^blog.*\.html$`
+	writeToFile  = false
 	doBackup     = true
 	backupSuffix = "~~"
 )
 
 var dirsToSkip = []string{".git"}
 
+// fileList if not empty, only these are processed. Each element is a full path
+var fileList = []string{
+
+}
+
 var frPairs = []frPair{
 
 	frPair{
-		fs: `<div class="lpanel_h7h547">
-<h4>Python by Example</h4>
-</div>`,
-
-		rs: `<div class="lpanel_h7h547">
-</div>`,
+		fs: `<table>
+<tr>
+<td>
+<pre class="lyrics_xl">`,
+		rs: `<pre class="lyrics_xl">`,
 	},
+
+	frPair{
+		fs: `</td> <td> `,
+		rs: "\n",
+	},
+
+
+	frPair{
+		fs: `</pre>
+</td>
+</tr>
+</table>`,
+		rs: `</pre>`,
+	},
+
+
 }
 
 type frPair struct {
@@ -83,46 +103,53 @@ func doFile(path string) error {
 	return nil
 }
 
+var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
+	if errX != nil {
+		fmt.Printf("error 「%v」 at a path 「%q」\n", errX, pathX)
+		return errX
+	}
+	if infoX.IsDir() {
+		if !pass(filepath.Base(pathX), dirsToSkip) {
+			return filepath.SkipDir
+		}
+	} else {
+		var x, err = regexp.MatchString(fnameRegex, filepath.Base(pathX))
+		if err != nil {
+			panic("stupid MatchString error 59767")
+		}
+		if x {
+			doFile(pathX)
+		}
+	}
+	return nil
+}
+
 func main() {
 	scriptName, errPath := os.Executable()
 	if errPath != nil {
 		panic(errPath)
 	}
 
-	fmt.Println("-*- coding: utf-8; mode: xah-find-output -*-" )
+	fmt.Println("-*- coding: utf-8; mode: xah-find-output -*-")
 	fmt.Printf("%v\n", time.Now())
 	fmt.Printf("Script: %v\n", filepath.Base(scriptName))
 	fmt.Printf("In dir: %v\n", inDir)
 	fmt.Printf("File regex filter: %v\n", fnameRegex)
 	fmt.Printf("Write to file: %v\n", writeToFile)
 	fmt.Printf("Do backup: %v\n", doBackup)
+	fmt.Printf("Do backup: %#v\n", fileList)
 	fmt.Printf("Find replace pairs: 「%#v」\n", frPairs)
 	fmt.Println()
 
-	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
-		if errX != nil {
-			fmt.Printf("error 「%v」 at a path 「%q」\n", errX, pathX)
-			return errX
+	if len(fileList) >= 1 {
+		for _, v := range fileList {
+			doFile(v)
 		}
-		if infoX.IsDir() {
-			if !pass(filepath.Base(pathX), dirsToSkip) {
-				return filepath.SkipDir
-			}
-		} else {
-			var x, err = regexp.MatchString(fnameRegex, filepath.Base(pathX))
-			if err != nil {
-				panic("stupid MatchString error 59767")
-			}
-			if x {
-				doFile(pathX)
-			}
+	} else {
+		err := filepath.Walk(inDir, pWalker)
+		if err != nil {
+			fmt.Printf("error walking the path %q: %v\n", inDir, err)
 		}
-		return nil
-	}
-
-	err := filepath.Walk(inDir, pWalker)
-	if err != nil {
-		fmt.Printf("error walking the path %q: %v\n", inDir, err)
 	}
 
 	fmt.Println()

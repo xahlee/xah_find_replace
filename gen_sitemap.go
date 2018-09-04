@@ -22,12 +22,39 @@ import (
 	"strings"
 )
 
-// inDir is dir to start. must be full path
-var inDir = "/Users/xah/web/xaharts_org/arts/"
+var dirsToProcess = []string{
 
-// var inDir = "/Users/xah/web/ergoemacs_org/"
 
-var dirsToSkip = []string{".git"}
+	// "/Users/xah/web/ergoemacs_org",
+	// "/Users/xah/web/wordyenglish_com",
+	// "/Users/xah/web/xaharts_org",
+	"/Users/xah/web/xahlee_info",
+	// "/Users/xah/web/xahlee_org",
+	// "/Users/xah/web/xahmusic_org",
+	// "/Users/xah/web/xahporn_org",
+	// "/Users/xah/web/xahsl_org",
+
+}
+
+var destFname = "sitemap2.xml"
+
+var dirsToSkip = []string{
+
+".git",
+"REC-SVG11-20110816",
+"clojure-doc-1.8",
+"css_2.1_spec",
+"css_transitions",
+"javascript_ecma-262_5.1_2011",
+"javascript_ecma-262_6_2015",
+"javascript_es2016",
+"javascript_es6",
+"jquery_doc",
+"node_api",
+"ocaml_doc",
+"python_doc_2.7.6",
+"python_doc_3.3.3",
+}
 
 // fnameRegex. only these are searched
 const fnameRegex = `\.html$`
@@ -53,8 +80,6 @@ var dirPathToUrl = map[string]string{
 	"/Users/xah/web/xahporn_org":      "http://xahporn.org",
 	"/Users/xah/web/xahsl_org":        "http://xahsl.org",
 }
-
-var pathToUrlReplacePair = getMatched(inDir, dirPathToUrl)
 
 // getMatched return the pair from mm, whose key is a prefix in ss. If none, panic.
 // version 2018-09-02
@@ -113,29 +138,35 @@ func getHeadBytes(path string, n int) []byte {
 	return headBytes[:m]
 }
 
-func doFile(path string) error {
+func doFile(path string, path2Url []string) (output []byte) {
 	var firstLinish = getHeadBytes(path, 200)
-
 	var pmoved, err = regexp.Match("page_moved_64598", firstLinish)
 	if err != nil {
 		panic(err)
 	}
-
 	if !pmoved {
+		output = append(output, fmt.Sprintf("<url><loc>%v</loc></url>\n", strings.Replace(path, path2Url[0], path2Url[1], 1))...)
 
-		fmt.Printf("<url><loc>%v</loc></url>\n", strings.Replace(path, pathToUrlReplacePair[0], pathToUrlReplacePair[1], 1))
 	}
-
-	// /Users/xah/web/ergoemacs_org/emacs/elisp_menu_for_major_mode.html
-	// fmt.Printf("%q\n", x)
-
-	return nil
+	return output
 }
 
-func genSiteMap(dirX string) {
+func writeIt(contentX []byte, pathX string) {
+	var fileH, err = os.Create(pathX)
+	if err != nil {
+		panic(err)
+	}
+	defer fileH.Close()
+	var _, errW = fileH.Write(contentX)
+	if errW != nil {
+		panic(errW)
+	}
+}
 
-	fmt.Println(`<?xml version="1.0" encoding="UTF-8"?>`)
-	fmt.Println(`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`)
+func genSiteMap(dirX string, path2Url []string) (output []byte) {
+
+	output = append(output, (`<?xml version="1.0" encoding="UTF-8"?>` + "\n")...)
+	output = append(output, (`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` + "\n")...)
 
 	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
 		if errX != nil {
@@ -154,20 +185,31 @@ func genSiteMap(dirX string) {
 				panic("stupid MatchString error 59767")
 			}
 			if goodExtension && !matchAny(fname, fnameRegexToSkip) {
-				doFile(pathX)
+				output = append(output, doFile(pathX,path2Url)...)
 			}
 		}
 		return nil
 	}
-	err := filepath.Walk(inDir, pWalker)
+	err := filepath.Walk(dirX, pWalker)
 	if err != nil {
-		fmt.Printf("error walking the path %q: %v\n", inDir, err)
+		fmt.Printf("error walking the path %q: %v\n", dirX, err)
 	}
-
-	fmt.Println(`</urlset>`)
-
+	output = append(output, (`</urlset>` + "\n")...)
+	return output
 }
 
 func main() {
-	genSiteMap(inDir)
+	var outBytes = make([]byte, 0, 2000)
+
+	for _, v := range dirsToProcess {
+		var path2Url = getMatched(v, dirPathToUrl)
+
+		outBytes = nil
+		outBytes = genSiteMap(v ,path2Url)
+		var saveToPath = filepath.Join(v, destFname)
+		writeIt(outBytes, saveToPath)
+		fmt.Printf("file saved to: %v\n", saveToPath)
+	}
+
+	fmt.Println("Done")
 }
