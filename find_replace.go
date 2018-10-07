@@ -12,8 +12,8 @@ import (
 
 const (
 	// inDir is dir to start. must be full path
-	inDir        = "/Users/xah/web/xahmusic_org/music/"
-	fnameRegex   = `^blog.*\.html$`
+	inDir        = "/Users/xah/xx_manual/"
+	fnameRegex   = `\.html$`
 	writeToFile  = false
 	doBackup     = true
 	backupSuffix = "~~"
@@ -22,35 +22,14 @@ const (
 var dirsToSkip = []string{".git"}
 
 // fileList if not empty, only these are processed. Each element is a full path
-var fileList = []string{
-
-}
+var fileList = []string{}
 
 var frPairs = []frPair{
 
 	frPair{
-		fs: `<table>
-<tr>
-<td>
-<pre class="lyrics_xl">`,
-		rs: `<pre class="lyrics_xl">`,
+		fs: `expansion`,
+		rs: `ppppp`,
 	},
-
-	frPair{
-		fs: `</td> <td> `,
-		rs: "\n",
-	},
-
-
-	frPair{
-		fs: `</pre>
-</td>
-</tr>
-</table>`,
-		rs: `</pre>`,
-	},
-
-
 }
 
 type frPair struct {
@@ -60,14 +39,14 @@ type frPair struct {
 
 // ------------------------------------------------------------
 
-// pass return false if x equals any of y
-func pass(x string, y []string) bool {
+// stringMatchAny return true if x equals any of y
+func stringMatchAny(x string, y []string) bool {
 	for _, v := range y {
 		if x == v {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
 
 func doFile(path string) error {
@@ -109,7 +88,7 @@ var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
 		return errX
 	}
 	if infoX.IsDir() {
-		if !pass(filepath.Base(pathX), dirsToSkip) {
+		if stringMatchAny(filepath.Base(pathX), dirsToSkip) {
 			return filepath.SkipDir
 		}
 	} else {
@@ -137,7 +116,7 @@ func main() {
 	fmt.Printf("File regex filter: %v\n", fnameRegex)
 	fmt.Printf("Write to file: %v\n", writeToFile)
 	fmt.Printf("Do backup: %v\n", doBackup)
-	fmt.Printf("Do backup: %#v\n", fileList)
+	fmt.Printf("fileList: %#v\n", fileList)
 	fmt.Printf("Find replace pairs: 「%#v」\n", frPairs)
 	fmt.Println()
 

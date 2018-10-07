@@ -10,8 +10,19 @@ import datetime
 # each must be full path to a file, not dir
 file_list = [
 
-# "/Users/xah/web/ergoemacs_org/xahemacs.css",
-# "/Users/xah/web/wordyenglish_com/wordy.css",
+"/Users/xah/web/ergoemacs_org/xahemacs.css",
+"/Users/xah/web/wordyenglish_com/wordy.css",
+"/Users/xah/web/xaharts_org/xaharts.css",
+"/Users/xah/web/xahlee_info/lbasic.css",
+"/Users/xah/web/xahlee_org/xlo22481.css",
+"/Users/xah/web/xahmusic_org/xahmusic.css",
+"/Users/xah/web/xahporn_org/xporn.css",
+"/Users/xah/web/xahsl_org/xahsl.css",
+
+"/Users/xah/web/wordyenglish_com/lit.css",
+"/Users/xah/web/xaharts_org/lit.css",
+"/Users/xah/web/xahlee_org/lit.css",
+"/Users/xah/web/xahmusic_org/lit.css"
 
 ]
 
@@ -27,22 +38,22 @@ DO_BACKUP = False
 FIND_REPLACE_LIST = [
 
 (
-'''Sample Function''',
-'''ppppp''',
-) ,
+'''a.rss_feed_xl:before {content:"RSS";
+border-radius:1rem;
+font-family: Arial, sans-serif;
+font-size:1rem;
+font-weight:bold;
+color:white;
+background-color:#f26522;
+padding:0 .5rem;
+margin-right:.2rem;
+}''',
+'',
+),
 
 # more pair here
 
 ]
-
-# "/Users/xah/web/ergoemacs_org/xahemacs.css",
-# "/Users/xah/web/wordyenglish_com/wordy.css",
-# "/Users/xah/web/xaharts_org/xaharts.css",
-# "/Users/xah/web/xahlee_info/lbasic.css",
-# "/Users/xah/web/xahlee_org/xahleeorg.css",
-# "/Users/xah/web/xahmusic_org/xahmusic.css",
-# "/Users/xah/web/xahporn_org/xporn.css",
-# "/Users/xah/web/xahsl_org/xahsl.css"
 
 # <nav class="nav-back-85230"><a href="index.html">FLATLAND</a></nav>
 # <iframe class="left_panel_26878" src="../web_design_panel_index_32509.html"></iframe>

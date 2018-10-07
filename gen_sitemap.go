@@ -13,17 +13,17 @@ import (
 )
 
 var dirsToProcess = []string{
-	// "/Users/xah/web/ergoemacs_org",
-	// "/Users/xah/web/wordyenglish_com",
-	// "/Users/xah/web/xaharts_org",
+	"/Users/xah/web/ergoemacs_org",
+	"/Users/xah/web/wordyenglish_com",
+	"/Users/xah/web/xaharts_org",
 	"/Users/xah/web/xahlee_info",
-	// "/Users/xah/web/xahlee_org",
-	// "/Users/xah/web/xahmusic_org",
-	// "/Users/xah/web/xahporn_org",
-	// "/Users/xah/web/xahsl_org",
+	"/Users/xah/web/xahlee_org",
+	"/Users/xah/web/xahmusic_org",
+	"/Users/xah/web/xahporn_org",
+	"/Users/xah/web/xahsl_org",
 }
 
-var destFname = "sitemap2.xml"
+var destFname = "sitemap.xml"
 
 var dirsToSkip = []string{
 	".git",

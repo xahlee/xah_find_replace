@@ -1,3 +1,5 @@
+// version 2018-10-07
+
 package main
 
 import (
@@ -6,11 +8,11 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"time"
 )
 
 // inDir is dir to start. must be full path
-// var inDir = "/Users/xah/xx_manual/"
-const inDir = "/Users/xah/web/xahlee_info/"
+const inDir = "/Users/xah/xx_manual/"
 
 var dirsToSkip = []string{".git"}
 
@@ -22,14 +24,14 @@ type frPair struct {
 var frPairs = []frPair{
 
 	frPair{
-		fs: `haskell`,
+		fs: `expansion`,
 		rs: `ppppp`,
 	},
 }
 
 // ext is file extension, with the dot.
 // only these are searched
-const fnameRegex = `^blog.+\.html$`
+const fnameRegex = `\.html$`
 
 const writeToFile = false
 
@@ -37,14 +39,23 @@ const writeToFile = false
 const doBackup = true
 const backupSuffix = "~~"
 
-// pass return false if x equals any of y
-func pass(x string, y []string) bool {
+// scriptName returns the current running script path
+func scriptName() string {
+	name, errPath := os.Executable()
+	if errPath != nil {
+		panic(errPath)
+	}
+	return name
+}
+
+// stringMatchAny return true if x equals any of y
+func stringMatchAny(x string, y []string) bool {
 	for _, v := range y {
 		if x == v {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
 
 func doFile(path string) error {
@@ -85,13 +96,21 @@ func doFile(path string) error {
 func main() {
 	// need to print date, find string, rep string, and root dir, extension
 
+	fmt.Println("-*- coding: utf-8; mode: xah-find-output -*-")
+	fmt.Printf("%v\n", time.Now())
+	fmt.Printf("Script: %v\n", filepath.Base(scriptName()))
+	fmt.Printf("in dir: %v\n", inDir)
+	fmt.Printf("file regex filter: %v\n", fnameRegex)
+	fmt.Printf("Find replace pairs: 「%#v」\n", frPairs)
+	fmt.Println()
+
 	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
 		if errX != nil {
 			fmt.Printf("error 「%v」 at a path 「%q」\n", errX, pathX)
 			return errX
 		}
 		if infoX.IsDir() {
-			if !pass(filepath.Base(pathX), dirsToSkip) {
+			if stringMatchAny(filepath.Base(pathX), dirsToSkip) {
 				return filepath.SkipDir
 			}
 		} else {

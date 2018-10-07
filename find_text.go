@@ -1,3 +1,5 @@
+// version 2018-10-07
+
 package main
 
 import (
@@ -10,20 +12,27 @@ import (
 )
 
 // inDir is dir to start. must be full path
-var inDir = "/Users/xah/web/xahlee_info/"
+const inDir = "/Users/xah/web/xahlee_info/python/"
 
 var dirsToSkip = []string{".git"}
 
-// var findStr = `’`
-var findStr = `＆`
-
+const findStr = `<code class="python">`
 
 // fnameRegex. only these are searched
 const fnameRegex = `\.html$`
 
 // number of chars (actually bytes) to show before the found string
-var before = 100
-var after = 100
+const before = 100
+const after = 100
+
+// scriptName returns the current running script path
+func scriptName() string {
+	name, errPath := os.Executable()
+	if errPath != nil {
+		panic(errPath)
+	}
+	return name
+}
 
 func max(x int, y int) int {
 	if x > y {
@@ -40,14 +49,14 @@ func min(x int, y int) int {
 	}
 }
 
-// pass return false if x equals any of y
-func pass(x string, y []string) bool {
+// stringMatchAny return true if x equals any of y
+func stringMatchAny(x string, y []string) bool {
 	for _, v := range y {
 		if x == v {
-			return false
+			return true
 		}
 	}
-	return true
+	return false
 }
 
 func doFile(path string) error {
@@ -62,7 +71,7 @@ func doFile(path string) error {
 
 	if len(indexes) != 0 {
 		fmt.Println("\n==================================================")
-		fmt.Printf("%v 〈%v〉\n", len(indexes), path)
+		fmt.Printf("%v ⦉%v⦊ \n", len(indexes), path)
 
 		for _, k := range indexes {
 			fmt.Println("-------------------------")
@@ -81,14 +90,9 @@ func doFile(path string) error {
 
 func main() {
 
-	scriptName, errPath := os.Executable()
-	if errPath != nil {
-		panic(errPath)
-	}
-
 	fmt.Println("-*- coding: utf-8; mode: xah-find-output -*-")
 	fmt.Printf("%v\n", time.Now())
-	fmt.Printf("Script: %v\n", filepath.Base(scriptName))
+	fmt.Printf("Script: %v\n", filepath.Base(scriptName()))
 	fmt.Printf("in dir: %v\n", inDir)
 	fmt.Printf("file regex filter: %v\n", fnameRegex)
 	fmt.Printf("Find string: 「%v」\n", findStr)
@@ -101,7 +105,7 @@ func main() {
 			return errX
 		}
 		if infoX.IsDir() {
-			if !pass(filepath.Base(pathX), dirsToSkip) {
+			if stringMatchAny(filepath.Base(pathX), dirsToSkip) {
 				return filepath.SkipDir
 			}
 		} else {
