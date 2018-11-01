@@ -24,7 +24,7 @@ type frPair struct {
 var frPairs = []frPair{
 
 	frPair{
-		fs: `expansion`,
+		fs: `<code class="[a-z]">tttttt`,
 		rs: `ppppp`,
 	},
 }
@@ -39,8 +39,9 @@ const writeToFile = false
 const doBackup = true
 const backupSuffix = "~~"
 
-// scriptName returns the current running script path
-func scriptName() string {
+// scriptPath returns the current running script path
+// version 2018-10-07
+func scriptPath() string {
 	name, errPath := os.Executable()
 	if errPath != nil {
 		panic(errPath)
@@ -76,7 +77,7 @@ func doFile(path string) error {
 	}
 
 	if changed {
-		fmt.Printf("changed: %v\n", path)
+		fmt.Printf("changed: 〘%v〙\n", path)
 		if writeToFile {
 			if doBackup {
 				err := os.Rename(path, path+backupSuffix)
@@ -98,7 +99,7 @@ func main() {
 
 	fmt.Println("-*- coding: utf-8; mode: xah-find-output -*-")
 	fmt.Printf("%v\n", time.Now())
-	fmt.Printf("Script: %v\n", filepath.Base(scriptName()))
+	fmt.Printf("Script: %v\n", filepath.Base(scriptPath()))
 	fmt.Printf("in dir: %v\n", inDir)
 	fmt.Printf("file regex filter: %v\n", fnameRegex)
 	fmt.Printf("Find replace pairs: 「%#v」\n", frPairs)

@@ -27,7 +27,7 @@ file_list = [
 ]
 
 # must be full path. dir can end with slash or no
-INPUT_DIR = "/Users/xah/xx_manual/"
+INPUT_DIR = "/Users/xah/web/"
 MIN_LEVEL = 1 # files and dirs inside INPUT_DIR are level 1.
 MAX_LEVEL = 5 # inclusive
 FILE_NAME_REGEX = r"\.html$"
@@ -38,16 +38,7 @@ DO_BACKUP = False
 FIND_REPLACE_LIST = [
 
 (
-'''a.rss_feed_xl:before {content:"RSS";
-border-radius:1rem;
-font-family: Arial, sans-serif;
-font-size:1rem;
-font-weight:bold;
-color:white;
-background-color:#f26522;
-padding:0 .5rem;
-margin-right:.2rem;
-}''',
+'''strong.r {color:red}''',
 '',
 ),
 

@@ -12,11 +12,12 @@ import (
 )
 
 // inDir is dir to start. must be full path
-const inDir = "/Users/xah/web/xahlee_info/python/"
+var inDir = "/Users/xah/web/xahlee_info/comp"
 
-var dirsToSkip = []string{".git"}
+var dirsToSkip = []string{
+	".git"}
 
-const findStr = `<code class="python">`
+const findStr = `forum`
 
 // fnameRegex. only these are searched
 const fnameRegex = `\.html$`
@@ -25,8 +26,19 @@ const fnameRegex = `\.html$`
 const before = 100
 const after = 100
 
-// scriptName returns the current running script path
-func scriptName() string {
+const fileSep = "ff━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+
+const occurSep = "oo───────────────────────────────────────────────────────\n"
+
+const occurBracketL = '〖'
+const occurBracketR = '〗'
+
+const posBracketL = '❪'
+const posBracketR = '❫'
+
+// scriptPath returns the current running script path
+// version 2018-10-07
+func scriptPath() string {
 	name, errPath := os.Executable()
 	if errPath != nil {
 		panic(errPath)
@@ -60,30 +72,32 @@ func stringMatchAny(x string, y []string) bool {
 }
 
 func doFile(path string) error {
-	var re = regexp.MustCompile(regexp.QuoteMeta(findStr))
-
 	var textBytes, er = ioutil.ReadFile(path)
 	if er != nil {
 		panic(er)
 	}
-
+	var re = regexp.MustCompile(regexp.QuoteMeta(findStr))
 	var indexes = re.FindAllIndex(textBytes, -1)
-
 	if len(indexes) != 0 {
-		fmt.Println("\n==================================================")
-		fmt.Printf("%v ⦉%v⦊ \n", len(indexes), path)
-
 		for _, k := range indexes {
-			fmt.Println("-------------------------")
 			var foundStart = k[0]
 			var foundEnd = k[1]
 			var showStart = max(foundStart-before, 0)
 			var showEnd = min(foundEnd+after, len(textBytes))
-
-			fmt.Printf("%s「%s」%s\n", textBytes[showStart:foundStart],
+			// 			fmt.Printf("%s〖%s〗%s\n", textBytes[showStart:foundStart],
+			fmt.Printf("%c%d%c %s%c%s%c%s\n",
+				posBracketL,
+				foundStart,
+				posBracketR,
+				textBytes[showStart:foundStart],
+				occurBracketL,
 				textBytes[foundStart:foundEnd],
+				occurBracketR,
 				textBytes[foundEnd:showEnd])
+			fmt.Println(occurSep)
 		}
+		fmt.Printf("%v 〘%v〙\n", len(indexes), path)
+		fmt.Println(fileSep)
 	}
 	return nil
 }
@@ -92,11 +106,12 @@ func main() {
 
 	fmt.Println("-*- coding: utf-8; mode: xah-find-output -*-")
 	fmt.Printf("%v\n", time.Now())
-	fmt.Printf("Script: %v\n", filepath.Base(scriptName()))
+	fmt.Printf("Script: %v\n", filepath.Base(scriptPath()))
 	fmt.Printf("in dir: %v\n", inDir)
 	fmt.Printf("file regex filter: %v\n", fnameRegex)
 	fmt.Printf("Find string: 「%v」\n", findStr)
 	fmt.Println()
+	fmt.Println(fileSep)
 
 	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
 		// first thing to do, check error. and decide what to do about it
@@ -123,5 +138,5 @@ func main() {
 	if err != nil {
 		fmt.Printf("error walking the path %q: %v\n", inDir, err)
 	}
-	fmt.Println("Done.")
+	fmt.Println("\nDone.")
 }
