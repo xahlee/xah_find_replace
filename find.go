@@ -9,26 +9,30 @@ import (
 	"path/filepath"
 	"regexp"
 	"time"
+	"unicode/utf8"
 )
 
 // inDir is dir to start. must be full path
-var inDir = "/Users/xah/web/xahlee_info/comp"
+var inDir = "/Users/xah/web/xahlee_info/comp/"
 
 var dirsToSkip = []string{
 	".git"}
 
-const findStr = `forum`
+// const findStr = `</mark>
+// → integers.`
+
+const findStr = `U+2124: DOUBLE-STRUCK CAPITAL Z">`
 
 // fnameRegex. only these are searched
 const fnameRegex = `\.html$`
 
 // number of chars (actually bytes) to show before the found string
-const before = 100
+const before = 1
 const after = 100
 
-const fileSep = "ff━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+const fileSep = "ff━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
 
-const occurSep = "oo───────────────────────────────────────────────────────\n"
+const occurSep = "oo────────────────────────────────────────────────────────────\n"
 
 const occurBracketL = '〖'
 const occurBracketR = '〗'
@@ -78,16 +82,28 @@ func doFile(path string) error {
 	}
 	var re = regexp.MustCompile(regexp.QuoteMeta(findStr))
 	var indexes = re.FindAllIndex(textBytes, -1)
+
+	var bytesLength = len(textBytes)
+
 	if len(indexes) != 0 {
 		for _, k := range indexes {
 			var foundStart = k[0]
 			var foundEnd = k[1]
 			var showStart = max(foundStart-before, 0)
-			var showEnd = min(foundEnd+after, len(textBytes))
+
+			for !utf8.RuneStart(textBytes[showStart]) {
+				showStart = max(showStart-1, 0)
+			}
+
+			var showEnd = min(foundEnd+after, bytesLength)
+			for !utf8.RuneStart(textBytes[showEnd]) {
+				showEnd = min(showEnd+1, bytesLength)
+			}
+
 			// 			fmt.Printf("%s〖%s〗%s\n", textBytes[showStart:foundStart],
 			fmt.Printf("%c%d%c %s%c%s%c%s\n",
 				posBracketL,
-				foundStart,
+				utf8.RuneCount(textBytes[0:foundStart+1]),
 				posBracketR,
 				textBytes[showStart:foundStart],
 				occurBracketL,

@@ -18,7 +18,7 @@ const (
 	// inDir is dir to start. must be full path
 	inDir        = "/Users/xah/web/xahlee_info/powershell"
 	fnameRegex   = `\.html$`
-	writeToFile  = true
+	writeToFile  = false
 	doBackup     = true
 	backupSuffix = "~~"
 )
@@ -28,47 +28,38 @@ var dirsToSkip = []string{".git"}
 // fileList if not empty, only these are processed. Each element is a full path
 var fileList = []string{
 
-"/Users/xah/web/xahlee_info/powershell/install_and_help.html",
-"/Users/xah/web/xahlee_info/powershell/powershell_help.html",
-"/Users/xah/web/xahlee_info/powershell/commands.html",
-"/Users/xah/web/xahlee_info/powershell/aliases.html",
-"/Users/xah/web/xahlee_info/powershell/piping_output_input.html",
-"/Users/xah/web/xahlee_info/powershell/environment_variables.html",
-"/Users/xah/web/xahlee_info/powershell/automatic_variables.html",
-"/Users/xah/web/xahlee_info/powershell/scripts.html",
-"/Users/xah/web/xahlee_info/powershell/PowerShell_for_unixer.html",
+"/Users/xah/web/xahlee_info/js/svg_basic_examples.html",
+"/Users/xah/web/xahlee_info/js/svg_path_spec.html",
+"/Users/xah/web/xahlee_info/js/svg_path_ellipse_arc.html",
+"/Users/xah/web/xahlee_info/js/svg_specify_style.html",
+"/Users/xah/web/xahlee_info/js/svg_shape_styles.html",
+"/Users/xah/web/xahlee_info/js/svg_viewport.html",
+"/Users/xah/web/xahlee_info/js/svg_viewBox.html",
+"/Users/xah/web/xahlee_info/js/svg_transformation.html",
+"/Users/xah/web/xahlee_info/js/svg_text_element.html",
+"/Users/xah/web/xahlee_info/js/svg_font_size.html",
+"/Users/xah/web/xahlee_info/js/svg_structure_elements.html",
+"/Users/xah/web/xahlee_info/js/js_scritping_svg_basics.html",
+"/Users/xah/web/xahlee_info/js/svg_clock.html",
+"/Users/xah/web/xahlee_info/js/svg_clock.js",
+"/Users/xah/web/xahlee_info/js/svg_animation.html",
 
 }
 
 var frPairs = []frPair{
 
 	frPair{
-		fs: `</div> <!-- end main -->`,
-		rs: `</div> <!-- end main -->
-
-<div class="panel_stick_7hpgn5">
-<h4>PowerShell</h4>
-<ol>
-<li><a href="install_and_help.html">Install</a></li>
-<li><a href="powershell_help.html">Help Command</a></li>
-<li><a href="commands.html">PowerShell as cmd.exe</a></li>
-<li><a href="aliases.html">list Alias, find Alias</a></li>
-<li><a href="piping_output_input.html">Piping Output and Input</a></li>
-<li><a href="environment_variables.html">Environment Variables</a></li>
-<li><a href="automatic_variables.html">Predefined Variables</a></li>
-<li><a href="scripts.html">Creating PowerShell Scripts</a></li>
-<li><a href="PowerShell_for_unixer.html">PowerShell vs Bash</a></li>
-</ol>
-</div>`,
+		fs: `<nav class="nav-back-85230"><a href="../js/index.html">Web Dev Tutorials</a></nav>`,
+		rs: `<nav class="nav-back-85230"><a href="svg.html">SVG Tutorial</a></nav>`,
 	},
 }
+
+// ------------------------------------------------------------
 
 type frPair struct {
 	fs string // find string
 	rs string // replace string
 }
-
-// ------------------------------------------------------------
 
 // stringMatchAny return true if x equals any of y
 func stringMatchAny(x string, y []string) bool {

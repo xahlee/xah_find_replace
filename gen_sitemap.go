@@ -1,5 +1,5 @@
 // given a dir, generate a sitemap.xml file for all its html files
-// version 2018-09-04
+// version 2018-11-04
 
 package main
 
@@ -35,11 +35,8 @@ var dirsToSkip = []string{
 	"javascript_ecma-262_6_2015",
 	"javascript_es2016",
 	"javascript_es6",
-	"jquery_doc",
 	"node_api",
 	"ocaml_doc",
-	"python_doc_2.7.6",
-	"python_doc_3.3.3",
 }
 
 // fnameRegex. only these are searched
