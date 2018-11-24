@@ -13,21 +13,18 @@ import (
 )
 
 // inDir is dir to start. must be full path
-var inDir = "/Users/xah/web/xahlee_info/comp/"
+var inDir = "/Users/xah/web/xahlee_info/comp"
 
 var dirsToSkip = []string{
 	".git"}
 
-// const findStr = `</mark>
-// → integers.`
-
-const findStr = `U+2124: DOUBLE-STRUCK CAPITAL Z">`
+const findStr = `forum `
 
 // fnameRegex. only these are searched
 const fnameRegex = `\.html$`
 
 // number of chars (actually bytes) to show before the found string
-const before = 1
+const before = 100
 const after = 100
 
 const fileSep = "ff━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
@@ -39,6 +36,9 @@ const occurBracketR = '〗'
 
 const posBracketL = '❪'
 const posBracketR = '❫'
+
+const fileBracketL = '〘'
+const fileBracketR = '〙'
 
 // scriptPath returns the current running script path
 // version 2018-10-07
@@ -112,7 +112,7 @@ func doFile(path string) error {
 				textBytes[foundEnd:showEnd])
 			fmt.Println(occurSep)
 		}
-		fmt.Printf("%v 〘%v〙\n", len(indexes), path)
+		fmt.Printf("%v %c%v%c\n", len(indexes), fileBracketL, path, fileBracketR)
 		fmt.Println(fileSep)
 	}
 	return nil
@@ -127,7 +127,7 @@ func main() {
 	fmt.Printf("file regex filter: %v\n", fnameRegex)
 	fmt.Printf("Find string: 「%v」\n", findStr)
 	fmt.Println()
-	fmt.Println(fileSep)
+	fmt.Println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n")
 
 	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
 		// first thing to do, check error. and decide what to do about it
