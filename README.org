@@ -1,12 +1,23 @@
 Several general and customizable find/replace scripts similar to sed/awk/grep.
 
-- find-replace.pl → perl version
-- find-replace.py3 → python 3, no regex
-- find_replace_regex.py3  → python 3, with regex
+- find.go → golang version
+- find.pl → perl version
+- find.py3 → python 3, no regex
 
-This is a tool for programers.
+find/replace scripts:
 
-To use, open the script, and edit the input path, and other parameters. These scripts do not use command line args by design, because when the string is long, it's easier to work with the script.
+- replace.go → golang version
+- replace_regex.py3  → python 3, with regex
+
+For emacs lisp version intgrated with emacs, see http://ergoemacs.org/emacs/elisp-xah-find-text.html
+
+These are tools for programers.
+
+To use, open the script, and edit the input path, and other parameters such as find/replace string or regex.
+
+These scripts do not use command line args by design, because when the string is long, it's easier to work with the script.
+
+Typically, in emacs or whatever IDE, setup shortcut keys to open these files. Then just edit the script and run it.
 
 Features:
 

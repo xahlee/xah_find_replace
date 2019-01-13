@@ -13,12 +13,12 @@ import (
 )
 
 // inDir is dir to start. must be full path
-var inDir = "/Users/xah/web/xahlee_info/comp"
+var inDir = "/Users/xah/web/"
 
 var dirsToSkip = []string{
 	".git"}
 
-const findStr = `forum `
+const findStr = `〔►`
 
 // fnameRegex. only these are searched
 const fnameRegex = `\.html$`
