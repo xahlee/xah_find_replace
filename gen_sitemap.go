@@ -1,10 +1,14 @@
 // given a dir, generate a sitemap.xml file for all its html files
 // version 2018-11-04
 
+// http://xahlee.info/golang/golang_gen_sitemap.html
+
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -12,31 +16,51 @@ import (
 	"strings"
 )
 
-var dirsToProcess = []string{
-	"/Users/xah/web/ergoemacs_org",
-	"/Users/xah/web/wordyenglish_com",
-	"/Users/xah/web/xaharts_org",
-	"/Users/xah/web/xahlee_info",
-	"/Users/xah/web/xahlee_org",
-	"/Users/xah/web/xahmusic_org",
-	"/Users/xah/web/xahporn_org",
-	"/Users/xah/web/xahsl_org",
+var domains = []string{
+	"ergoemacs.org",
+	"wordyenglish.com",
+	"xaharts.org",
+	"xahlee.info",
+	"xahlee.org",
+	"xahmusic.org",
+	"xahsl.org",
 }
 
-var destFname = "sitemap.xml"
+var domainRootdirMap = map[string]string{
+	"ergoemacs.org":    "/Users/xah/web/ergoemacs_org",
+	"wordyenglish.com": "/Users/xah/web/wordyenglish_com",
+	"xaharts.org":      "/Users/xah/web/xaharts_org",
+	"xahlee.info":      "/Users/xah/web/xahlee_info",
+	"xahlee.org":       "/Users/xah/web/xahlee_org",
+	"xahmusic.org":     "/Users/xah/web/xahmusic_org",
+	"xahsl.org":        "/Users/xah/web/xahsl_org",
+}
+
+var domainToSitemapHtmlFilenameMap = map[string]string{
+	"ergoemacs.org":    "sitemap.html",
+	"wordyenglish.com": "sitemap.html",
+	"xaharts.org":      "sitemap.html",
+	"xahlee.info":      "sitemap.html",
+	"xahlee.org":       "sitemap.html",
+	"xahmusic.org":     "index.html",
+	"xahsl.org":        "sitemap.html",
+}
+
+var sitemapXmlFilename = "sitemap.xml"
 
 var dirsToSkip = []string{
 	".git",
+	"emacs_manual",
 	"REC-SVG11-20110816",
 	"clojure-doc-1.8",
 	"css_2.1_spec",
 	"css_transitions",
-	"javascript_ecma-262_5.1_2011",
-	"javascript_ecma-262_6_2015",
-	"javascript_es2016",
-	"javascript_es6",
+	"js_es2011",
+	"js_es2015",
+	"js_es2015_orig",
+	"js_es2016",
+	"js_es2018",
 	"node_api",
-	"ocaml_doc",
 }
 
 // fnameRegex. only these are searched
@@ -53,30 +77,74 @@ var dirRegexToSkip = []string{
 	`^xx`,
 }
 
-var dirPathToUrl = map[string]string{
+var pathUrlMap = map[string]string{
 	"/Users/xah/web/ergoemacs_org":    "http://ergoemacs.org",
 	"/Users/xah/web/wordyenglish_com": "http://wordyenglish.com",
 	"/Users/xah/web/xaharts_org":      "http://xaharts.org",
 	"/Users/xah/web/xahlee_info":      "http://xahlee.info",
 	"/Users/xah/web/xahlee_org":       "http://xahlee.org",
 	"/Users/xah/web/xahmusic_org":     "http://xahmusic.org",
-	"/Users/xah/web/xahporn_org":      "http://xahporn.org",
 	"/Users/xah/web/xahsl_org":        "http://xahsl.org",
 }
 
-// getMatched return the pair from mm, whose key is a prefix in ss. If none, panic.
+var domainSiteIndexMap = map[string]string{
+	"ergoemacs.org":    "/Users/xah/web/ergoemacs_org/emacs_sitemap.html",
+	"wordyenglish.com": "",
+	"xaharts.org":      "",
+	"xahlee.info":      "/Users/xah/web/xahlee_info/xah_code_sitemap.html",
+	"xahlee.org":       "",
+	"xahmusic.org":     "",
+	"xahsl.org":        "",
+}
+
+// getMatched return the pair from map1, whose key is a prefix of str1. If none, panic.
 // version 2018-09-02
-var getMatched = func(ss string, mm map[string]string) []string {
-	var bb = []string{``, ``}
-	for k, v := range mm {
-		if strings.HasPrefix(ss, k) {
-			bb[0] = k
-			bb[1] = v
-			return bb
+var getMatched = func(str1 string, map1 map[string]string) []string {
+	var result = []string{``, ``}
+	for k, v := range map1 {
+		if strings.HasPrefix(str1, k) {
+			result[0] = k
+			result[1] = v
+			return result
 		}
 	}
 	panic("logic error. 83580")
 	return nil
+}
+
+type FileInfo struct {
+	path  string
+	url   string
+	title string
+	moved bool
+}
+
+var fileList []FileInfo
+
+// getFileInfo opens a file returns struct FileInfo
+// if first line of file contains string page_moved_64598, then return nothing
+func getFileInfo(path string) FileInfo {
+	var header1 = getHeadBytes(path, 6000)
+	var pmoved, err = regexp.Match("page_moved_64598", header1)
+	if err != nil {
+		panic(err)
+	}
+	var title = ""
+	if !pmoved {
+		var re = regexp.MustCompile(`<title>([^<]+)</title>`)
+		var result = re.FindSubmatch(header1)
+		if result == nil {
+			fmt.Printf("%v\n", path)
+			panic("no title found")
+		} else {
+			title = string(result[1])
+		}
+	}
+	return FileInfo{
+		path:  path,
+		title: title,
+		moved: pmoved,
+	}
 }
 
 // equalAny return true if x equals any of y
@@ -90,11 +158,11 @@ func equalAny(x string, y []string) bool {
 	return false
 }
 
-// matchAny return true if ss is matched by any of regex regexes.
+// matchAny return true if str1 is matched by any of regex regexes.
 // version 2018-09-01
-func matchAny(ss string, regexes []string) bool {
+func matchAny(str1 string, regexes []string) bool {
 	for _, re := range regexes {
-		result, err := regexp.MatchString(re, ss)
+		result, err := regexp.MatchString(re, str1)
 		if err != nil {
 			panic(err)
 		}
@@ -121,34 +189,9 @@ func getHeadBytes(path string, n int) []byte {
 	return headBytes[:m]
 }
 
-func doFile(path string, path2Url []string) (output []byte) {
-	var firstLinish = getHeadBytes(path, 200)
-	var pmoved, err = regexp.Match("page_moved_64598", firstLinish)
-	if err != nil {
-		panic(err)
-	}
-	if !pmoved {
-		output = append(output, fmt.Sprintf("<url><loc>%v</loc></url>\n", strings.Replace(path, path2Url[0], path2Url[1], 1))...)
-
-	}
-	return output
-}
-
-func writeIt(contentX []byte, pathX string) {
-	var fileH, err = os.Create(pathX)
-	if err != nil {
-		panic(err)
-	}
-	defer fileH.Close()
-	var _, errW = fileH.Write(contentX)
-	if errW != nil {
-		panic(errW)
-	}
-}
-
-func sitemap(dirX string, path2Url []string) []byte {
-	var output = []byte(`<?xml version="1.0" encoding="UTF-8"?>` + "\n")
-	output = append(output, (`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">` + "\n")...)
+// initFileList fills fileList.
+func initFileList(dirX string) {
+	fileList = make([]FileInfo, 0, 7000)
 	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
 		if errX != nil {
 			panic(fmt.Sprintf("error 「%v」 at a path 「%q」\n", errX, pathX))
@@ -163,8 +206,13 @@ func sitemap(dirX string, path2Url []string) []byte {
 			if err != nil {
 				panic("stupid golang MatchString error")
 			}
-			if goodExtension && !matchAny(fname, fnameRegexToSkip) {
-				output = append(output, doFile(pathX, path2Url)...)
+			if goodExtension {
+				if !matchAny(fname, fnameRegexToSkip) {
+					var fInfo = getFileInfo(pathX)
+					if !fInfo.moved {
+						fileList = append(fileList, fInfo)
+					}
+				}
 			}
 		}
 		return nil
@@ -173,19 +221,98 @@ func sitemap(dirX string, path2Url []string) []byte {
 	if err != nil {
 		fmt.Printf("error walking the path %q: %v\n", dirX, err)
 	}
+}
+
+// writeToFile saves contentX into file at path pathX
+func writeToFile(contentX []byte, pathX string) {
+	var fileH, err = os.Create(pathX)
+	if err != nil {
+		panic(err)
+	}
+	defer fileH.Close()
+	var _, errW = fileH.Write(contentX)
+	if errW != nil {
+		panic(errW)
+	}
+}
+
+func fileListToSitemap(fileList []FileInfo, rootDir string, domainUrl string) []byte {
+	var output = make([]byte, 0, 10000)
+	output = append(output, (`<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+`)...)
+	for _, fileinfo := range fileList {
+		var fUrl = strings.Replace(fileinfo.path, rootDir, domainUrl, 1)
+		output = append(output, fmt.Sprintf("<url><loc>%v</loc></url>\n", fUrl)...)
+	}
 	output = append(output, (`</urlset>` + "\n")...)
 	return output
 }
 
+func updateSitemapHtmlFile(domain string, rootDir string) {
+	var sitemapHtmlFilePath = rootDir + "/" + domainToSitemapHtmlFilenameMap[domain]
+	var searchStrStart = `<ol id="sitemapList58821" style="margin-left:16px;">`
+	var searchStrEnd = `</ol>`
+
+	myTextB, myErr := ioutil.ReadFile(sitemapHtmlFilePath)
+	if myErr != nil {
+		panic(myErr)
+	}
+
+	var searchStrStartPos = bytes.Index(myTextB, []byte(searchStrStart))
+	var searchStrEndPos = bytes.Index(myTextB, []byte(searchStrEnd))
+
+	if searchStrStartPos == -1 {
+		panic("searchStrStart not found")
+	}
+	if searchStrEndPos == -1 {
+		panic("searchStrEnd not found")
+	}
+
+	var linesBytes = make([]byte, 0, 200000)
+
+	for _, filex := range fileList {
+		var path96864 = filex.path
+		var title43608 = filex.title
+		var relativePath, err = filepath.Rel(rootDir, path96864)
+		if err != nil {
+			panic(err)
+		}
+		linesBytes = append(linesBytes, fmt.Sprintf("<li><a href=\"%s\" target=\"_blank\">%s</a></li>\n", relativePath, title43608)...)
+
+	}
+
+	var beginChunck = myTextB[:searchStrStartPos+len(searchStrStart)]
+	var endChunck = myTextB[searchStrEndPos:]
+
+	var newTextB = append([]byte{}, beginChunck...)
+	newTextB = append(newTextB, linesBytes...)
+	newTextB = append(newTextB, endChunck...)
+
+	err := ioutil.WriteFile(sitemapHtmlFilePath, newTextB, 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Modified %v\n", sitemapHtmlFilePath)
+
+}
+
 func main() {
-	var outBytes []byte
-	for _, v := range dirsToProcess {
-		var path2Url = getMatched(v, dirPathToUrl)
-		outBytes = nil
-		outBytes = sitemap(v, path2Url)
-		var saveToPath = filepath.Join(v, destFname)
-		writeIt(outBytes, saveToPath)
+	for _, domain := range domains {
+		var rootDir = domainRootdirMap[domain]
+		initFileList(rootDir)
+		var saveToPath = filepath.Join(rootDir, sitemapXmlFilename)
+
+		var output = fileListToSitemap(fileList, rootDir, "http://"+domain)
+
+		writeToFile(output, saveToPath)
 		fmt.Printf("file saved to: %v\n", saveToPath)
+
+		updateSitemapHtmlFile(domain, rootDir)
+
+		fmt.Println()
+
 	}
 	fmt.Println("Done")
 }

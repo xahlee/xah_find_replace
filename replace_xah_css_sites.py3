@@ -46,6 +46,20 @@ FIND_REPLACE_LIST = [
 
 ]
 
+# a regex string. any full path that match is skipped
+DIRPATH_SKIP_REGEX =
+r"emacs_manual|\
+REC-SVG11-20110816|\
+clojure-doc-1.8|\
+css_2.1_spec|\
+css_transitions|\
+js_es2011|\
+js_es2015|\
+js_es2015_orig|\
+js_es2016|\
+js_es2018|\
+node_api"
+
 # <nav class="nav-back-85230"><a href="index.html">FLATLAND</a></nav>
 # <iframe class="left_panel_26878" src="../web_design_panel_index_32509.html"></iframe>
 
@@ -106,25 +120,7 @@ else:
         curFileLevel = curDirLevel + 1
 # emacs_manual|\
 
-        if (MIN_LEVEL <= curFileLevel) and (curFileLevel <= MAX_LEVEL) and (not re.search(r"REC-SVG11-20110816|\
-clojure-doc-1.8|\
-ocaml_doc|\
-css3_spec_bg|\
-css_2.1_spec|\
-css_3_color_spec|\
-css_transitions|\
-dom-whatwg|\
-html5_whatwg|\
-java8_doc|\
-javascript_ecma-262_5.1_2011|\
-javascript_ecma-262_6_2015|\
-javascript_es2016|\
-javascript_es6|\
-jquery_doc|\
-node_api|\
-php-doc|\
-python_doc_2.7.6|\
-python_doc_3.3.3", dirPath, re.U)):
+        if (MIN_LEVEL <= curFileLevel) and (curFileLevel <= MAX_LEVEL) and (not re.search( DIRPATH_SKIP_REGEX, dirPath, re.U)):
             # print (dirPath)
             for fName in fileList:
                 if (re.search( FILE_NAME_REGEX, fName, re.U)) and (not (re.search(r"#", fName, re.U))):

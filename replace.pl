@@ -4,9 +4,7 @@
 use utf8;
 use strict;
 
-
 =pod
-
 
 Description:
 This script does find and replace on a given foler recursively.
@@ -30,28 +28,27 @@ to do:
 • Report if backup directory exists already, or provide toggle to overwrite, or some other smarties.
 
 Date created: 2000-02
-Author: Xah Lee, XahLee.org
+Last run: 2019-01-13
+web site: http://xahlee.info/perl/perl_find_replace_in_dir.html
+Author: Xah Lee
 
 =cut
-
-#-- modules --
 
 use File::Find;
 use File::Path;
 use File::Copy;
 use Data::Dumper;
 
-#-- arguments --
+# dir search
+my $inputDirPath = q[/Users/xah/web/ergoemacs_org/emacs_manual/];
 
-# the folder to be search on.
-my $folderPath = q[/Users/xah/web/UnixResource_dir/xx];
+# backup dir path. if no exit, will be created
+my $backupDirPath = q[/Users/xah/backup];
 
-# this is the backup folder path.
-my $backupFolderPath = q[/Users/xah/xxxb];
-
+# find/replace string pairs
 my %findReplaceH = (
-q[find string here] => q[replace string here],
-q[more find string here] => q[more replace string here],
+q[find string here 1] => q[replace string here 1],
+q[find string here 2] => q[replace string here 2],
 );
 
 # $useRegexQ has values 1 or 0. If 1, inteprets the pairs in %findReplaceH
@@ -59,23 +56,24 @@ q[more find string here] => q[more replace string here],
 my $useRegexQ = 0;
 
 # in bytes. larger files will be skipped
-my $fileSizeLimit = 500 * 1000;
+my $fileSizeLimit = 2000 * 1000;
 
+# --------------------------------------------------
+# globals
 
-#-- globals --
+$inputDirPath =~ s[/$][]; # e.g. '/home/joe/public_html'
+$backupDirPath =~ s[/$][]; # e.g. '/tmp/joe_back';
 
-$folderPath =~ s[/$][]; # e.g. '/home/joe/public_html'
-$backupFolderPath =~ s[/$][]; # e.g. '/tmp/joe_back';
-
-$folderPath =~ m[/(\w+)$];
+$inputDirPath =~ m[/(\w+)$];
 my $previousDir = $`;   # e.g. '/home/joe'
 my $lastDir = $1;       # e.g. 'public_html'
-my $backupRoot = $backupFolderPath . '/' . $1; # e.g. '/tmp/joe_back/public_html'
+my $backupRoot = $backupDirPath . '/' . $1; # e.g. '/tmp/joe_back/public_html'
 
 my $refLargeFiles = [];
 my $totalFileChangedCount = 0;
 
-#-- subroutines --
+# --------------------------------------------------
+# subroutines
 
 # fileFilterQ($fullFilePath) return true if file is desired.
 sub fileFilterQ ($) {
@@ -106,7 +104,7 @@ sub processFile {
         }
 
 # open file. Read in the whole file.
-        if (not(open FILE, "<$currentFile")) {die("Error opening file: 
+        if (not(open FILE, "<$currentFile")) {die("Error opening file:
 $!");};
         my $wholeFileString;
         {local $/ = undef; $wholeFileString = <FILE>;};
@@ -117,7 +115,7 @@ $!");};
 
         foreach my $key1 (keys %findReplaceH) {
                 my $pattern = ($useRegexQ ? $key1 : quotemeta($key1));
-                $replaceCount = $replaceCount + ($wholeFileString =~ 
+                $replaceCount = $replaceCount + ($wholeFileString =~
 s/$pattern/$findReplaceH{$key1}/g);
         };
 
@@ -125,7 +123,7 @@ s/$pattern/$findReplaceH{$key1}/g);
                 $totalFileChangedCount++;
 # do backup
                 # make a directory in the backup path, make a backup copy.
-                my $pathAdd = $currentDir; $pathAdd =~ s[$folderPath][];
+                my $pathAdd = $currentDir; $pathAdd =~ s[$inputDirPath][];
                 mkpath("$backupRoot/$pathAdd", 0, 0777);
                 copy($currentFile, "$backupRoot/$pathAdd/$currentFileName") or
                     die "error: file copying file failed on $currentFile\n$!";
@@ -143,17 +141,17 @@ s/$pattern/$findReplaceH{$key1}/g);
                 chmod($mode, $currentFile);
                 chown($uid, $gid, $currentFile);
 
-                print "-----^$*%$@#-------------------------------\n";
+                print "-----out77311-------------------------------\n";
                 print "$replaceCount replacements made at\n";
                 print "$currentFile\n";
         }
 
 };
 
+# --------------------------------------------------
+# main
 
-#-- main body --
-
-find(\&processFile, $folderPath);
+find(\&processFile, $inputDirPath);
 
 print "--------------------------------------------\n\n\n";
 print "Total of $totalFileChangedCount files changed.\n";
@@ -162,6 +160,5 @@ if (scalar @$refLargeFiles > 0) {
         print "The following large files are skipped:\n";
         print Dumper($refLargeFiles);
 }
-
 
 __END__

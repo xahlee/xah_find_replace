@@ -4,10 +4,12 @@
 
 # change all files in a dir by 1 or more regex/replace pairs
 
+# web site: http://xahlee.info/python/findreplace_regex.html
+
 import os, sys, shutil, re
 import datetime
 
-# if this this is not empty, then only these files will be processed
+# if this list is not empty, then only these files will be processed
 file_list = [
     # "/home/xah/web/ergoemacs_org/emacs/emacs.html", # example
 ]

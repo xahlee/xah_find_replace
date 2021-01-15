@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 # Python 3
 
-# find & replace mutiple pairs of strings in a dir or list of files
+# find and replace mutiple pairs of strings in a dir or list of files
+
+# home page http://xahlee.info/python/find_replace_dir.html
+
+# version 2019-02-14
 
 import os, sys, shutil, re
 import datetime
@@ -10,44 +14,44 @@ import datetime
 # each must be full path to a file, not dir
 file_list = [
 
+# "/Users/xah/xx_manual/elisp/Abbrev-Files.html",
+
 ]
 
 # must be full path. dir can end with slash or no
-INPUT_DIR = "/Users/xah/web/"
-MIN_LEVEL = 1 # files and dirs inside INPUT_DIR are level 1.
-MAX_LEVEL = 5 # inclusive
+INPUT_DIR = "/Users/xah/web/ergoemacs_org/"
+MIN_LEVEL = 2 # files and dirs inside INPUT_DIR are level 1.
+MAX_LEVEL = 2 # inclusive
 FILE_NAME_REGEX = r"\.html$"
 PRINT_FILENAME_WHEN_NO_CHANGE = False
 BACKUP_FNAME_EXT = '~bk~'
-DO_BACKUP = False
+DO_BACKUP = True
 
 FIND_REPLACE_LIST = [
-
 (
-'''<div id="disqus_thread"></div>
-<script>
-(function() {
-var d = document, s = d.createElement('script');
-s.src = 'https://xahlee.disqus.com/embed.js';
-s.setAttribute('data-timestamp', +new Date());
-(d.head || d.body).appendChild(s);
-})();
-</script>''',
-'<!-- comment_6b83f -->',
+'''<footer><span class="xsignet">∑</span><span class="xsignetxah">XAH</span> <div class="cpr">© 2006, 2020 Xah Lee.</div></footer>''',
+
+'''<footer><a href="../index.html"><span class="xsignet">∑</span><span class="xsignetxah">XAH</span></a> <div class="cpr">© 2006, 2020 Xah Lee.</div></footer>''',
+
 ),
-
 # more pair here
-
 ]
 
-# <nav class="nav-back-85230"><a href="index.html">FLATLAND</a></nav>
-# <iframe class="left_panel_26878" src="../web_design_panel_index_32509.html"></iframe>
-
-# /Users/xah/web/xahlee_info/kbd/keyboard_blog_panel_index.html
-
-# git checkout . && git clean -dxfq && time grep -r -F "same line" --include='*html' /Users/xah/xx_manual/ > xxgrep
+# a regex string. any full path that match is skipped
+DIRPATH_SKIP_REGEX = r"emacs_manual|\
+REC-SVG11-20110816|\
+clojure-doc-1.8|\
+css_2.1_spec|\
+css_transitions|\
+js_es2011|\
+js_es2015|\
+js_es2015_orig|\
+js_es2016|\
+js_es2018|\
+node_api"
 
 ##################################################
+# code begin
 
 INPUT_DIR = os.path.normpath(INPUT_DIR)
 
@@ -100,25 +104,7 @@ else:
         curFileLevel = curDirLevel + 1
 # emacs_manual|\
 
-        if (MIN_LEVEL <= curFileLevel) and (curFileLevel <= MAX_LEVEL) and (not re.search(r"REC-SVG11-20110816|\
-clojure-doc-1.8|\
-ocaml_doc|\
-css3_spec_bg|\
-css_2.1_spec|\
-css_3_color_spec|\
-css_transitions|\
-dom-whatwg|\
-html5_whatwg|\
-java8_doc|\
-javascript_ecma-262_5.1_2011|\
-javascript_ecma-262_6_2015|\
-javascript_es2016|\
-javascript_es6|\
-jquery_doc|\
-node_api|\
-php-doc|\
-python_doc_2.7.6|\
-python_doc_3.3.3", dirPath, re.U)):
+        if (MIN_LEVEL <= curFileLevel) and (curFileLevel <= MAX_LEVEL) and (not re.search(DIRPATH_SKIP_REGEX, dirPath, re.U)):
             # print (dirPath)
             for fName in fileList:
                 if (re.search( FILE_NAME_REGEX, fName, re.U)) and (not (re.search(r"#", fName, re.U))):
