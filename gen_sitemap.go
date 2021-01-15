@@ -1,5 +1,5 @@
 // given a dir, generate a sitemap.xml file for all its html files
-// version 2018-11-04
+// version 2018-11-04, 2021-01-14
 
 // http://xahlee.info/golang/golang_gen_sitemap.html
 
@@ -16,7 +16,7 @@ import (
 	"strings"
 )
 
-var domains = []string{
+var xDomains = []string{
 	"ergoemacs.org",
 	"wordyenglish.com",
 	"xaharts.org",
@@ -75,26 +75,6 @@ var fnameRegexToSkip = []string{
 var dirRegexToSkip = []string{
 	`^\.git$`,
 	`^xx`,
-}
-
-var pathUrlMap = map[string]string{
-	"/Users/xah/web/ergoemacs_org":    "http://ergoemacs.org",
-	"/Users/xah/web/wordyenglish_com": "http://wordyenglish.com",
-	"/Users/xah/web/xaharts_org":      "http://xaharts.org",
-	"/Users/xah/web/xahlee_info":      "http://xahlee.info",
-	"/Users/xah/web/xahlee_org":       "http://xahlee.org",
-	"/Users/xah/web/xahmusic_org":     "http://xahmusic.org",
-	"/Users/xah/web/xahsl_org":        "http://xahsl.org",
-}
-
-var domainSiteIndexMap = map[string]string{
-	"ergoemacs.org":    "/Users/xah/web/ergoemacs_org/emacs_sitemap.html",
-	"wordyenglish.com": "",
-	"xaharts.org":      "",
-	"xahlee.info":      "/Users/xah/web/xahlee_info/xah_code_sitemap.html",
-	"xahlee.org":       "",
-	"xahmusic.org":     "",
-	"xahsl.org":        "",
 }
 
 // getMatched return the pair from map1, whose key is a prefix of str1. If none, panic.
@@ -191,7 +171,7 @@ func getHeadBytes(path string, n int) []byte {
 
 // initFileList fills fileList.
 func initFileList(dirX string) {
-	fileList = make([]FileInfo, 0, 7000)
+	fileList = make([]FileInfo, 0, 9000)
 	var pWalker = func(pathX string, infoX os.FileInfo, errX error) error {
 		if errX != nil {
 			panic(fmt.Sprintf("error 「%v」 at a path 「%q」\n", errX, pathX))
@@ -236,13 +216,14 @@ func writeToFile(contentX []byte, pathX string) {
 	}
 }
 
-func fileListToSitemap(fileList []FileInfo, rootDir string, domainUrl string) []byte {
+// take a file list and return a string of them as sitemap xml
+func fileListToSitemapXml(fileList []FileInfo, rootDir string, domainUrl string) []byte {
 	var output = make([]byte, 0, 10000)
 	output = append(output, (`<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 `)...)
 	for _, fileinfo := range fileList {
-		var fUrl = strings.Replace(fileinfo.path, rootDir, domainUrl, 1)
+		var fUrl = strings.Replace(filepath.ToSlash(fileinfo.path), rootDir, domainUrl, 1)
 		output = append(output, fmt.Sprintf("<url><loc>%v</loc></url>\n", fUrl)...)
 	}
 	output = append(output, (`</urlset>` + "\n")...)
@@ -278,7 +259,7 @@ func updateSitemapHtmlFile(domain string, rootDir string) {
 		if err != nil {
 			panic(err)
 		}
-		linesBytes = append(linesBytes, fmt.Sprintf("<li><a href=\"%s\" target=\"_blank\">%s</a></li>\n", relativePath, title43608)...)
+		linesBytes = append(linesBytes, fmt.Sprintf("<li><a href=\"%s\" target=\"_blank\">%s</a></li>\n", filepath.ToSlash(relativePath), title43608)...)
 
 	}
 
@@ -299,13 +280,11 @@ func updateSitemapHtmlFile(domain string, rootDir string) {
 }
 
 func main() {
-	for _, domain := range domains {
+	for _, domain := range xDomains {
 		var rootDir = domainRootdirMap[domain]
 		initFileList(rootDir)
 		var saveToPath = filepath.Join(rootDir, sitemapXmlFilename)
-
-		var output = fileListToSitemap(fileList, rootDir, "http://"+domain)
-
+		var output = fileListToSitemapXml(fileList, rootDir, "http://"+domain)
 		writeToFile(output, saveToPath)
 		fmt.Printf("file saved to: %v\n", saveToPath)
 

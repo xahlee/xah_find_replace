@@ -1,5 +1,5 @@
 // find strings in a dir. can be a list of strings
-// version 2020-05-24
+// version 2020-05-24, 2021-01-14
 // website: http://xahlee.info/golang/goland_find_string.html
 
 package main
@@ -38,10 +38,6 @@ var findList = []string{
 
 // fnameRegex. only these are searched
 const fnameRegex = `\.html$`
-
-// const fnameRegex = `\.js$`
-// const fnameRegex = `\.css$`
-// const fnameRegex = `\.txt$`
 
 // number of chars (actually bytes) to show before the found string
 const charsBefore = 100
