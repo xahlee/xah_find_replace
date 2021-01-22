@@ -22,7 +22,9 @@ var dirsToSkip = []string{
 	".git"}
 
 // fileList if not empty, only these are processed. Each element is a full path
-var fileList = []string{}
+var fileList = []string{
+
+}
 
 // list of string to search
 // each item is intepreted as regex
@@ -30,14 +32,12 @@ var findList = []string{
 
 	// regexp.QuoteMeta(`>Source`),
 	// regexp.QuoteMeta(`.zip">`),
-	// regexp.QuoteMeta(`<ruby class="ruby88">`),
-	// regexp.QuoteMeta(`ruby88`),
-	regexp.QuoteMeta(`CJK IDEOGRAPH`),
 
 }
 
 // fnameRegex. only these are searched
-const fnameRegex = `\.html$`
+// const fnameRegex = `\.html$`
+const fnameRegex = `\.css$`
 
 // number of chars (actually bytes) to show before the found string
 const charsBefore = 100

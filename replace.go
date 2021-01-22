@@ -17,9 +17,9 @@ import (
 
 const (
 	// inDir is dir to start. must be full path
-	inDir = "/Users/xah/web/"
-	fnameRegex  = `\.html$`
-	writeToFile = true
+	inDir        = "/Users/xah/web/"
+	fnameRegex   = `\.html$`
+	writeToFile  = true
 	doBackup     = true
 	backupSuffix = "~~"
 )
@@ -33,8 +33,15 @@ var fileList = []string{}
 var frPairs = []frPair{
 
 	frPair{
-		findStr:    `<ol id="sitemapList58821">`,
-		replaceStr: `<ol id="sitemapList58821" style="margin-left:16px;">`,
+		findStr:    `<div class="lpanel_h7h547">
+<h4>Emacs</h4>
+<ul>
+<li><a href="emacs/emacs_modernization.html">Emacs Modernization</a></li>
+<li><a href="emacs_fun_index.html">Emacs Fun</a></li>
+<li><a href="emacs/blog.html">Blog</a></li>
+</ul>
+</div>`,
+		replaceStr: ``,
 	},
 }
 

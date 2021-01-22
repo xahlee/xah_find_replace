@@ -28,7 +28,7 @@ def check_file(file_path):
     try:
         file_content = input_file.read()
     except UnicodeDecodeError:
-        print("Unicode Decode Error 33167:「{:s}」".format(file_path))
+        print("Unicode Decode Error 33167:{:s}".format(file_path))
         return
 
     input_file.close()
@@ -39,7 +39,7 @@ def check_file(file_path):
     close_count += file_content.count("</main>")
 
     if open_count != close_count:
-        print("◆ ", open_count, " ", close_count, file_path)
+        print("* ", open_count, " ", close_count, file_path)
 
 print(datetime.datetime.now())
 print("Input Dir:", input_dir)

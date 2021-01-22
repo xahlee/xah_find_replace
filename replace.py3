@@ -76,7 +76,7 @@ def replace_string_in_file(file_path):
         file_content = file_content.replace(a_pair[0], a_pair[1])
 
     if num_replaced > 0:
-        print("◆ ", num_replaced, " ", file_path.replace(os.sep, "/"))
+        print("* ", num_replaced, " ", file_path.replace(os.sep, "/"))
         if DO_BACKUP:
             backup_fname = file_path + BACKUP_FNAME_EXT
             os.rename(file_path, backup_fname)
@@ -92,8 +92,8 @@ def replace_string_in_file(file_path):
 print(datetime.datetime.now())
 print("Input Dir:", INPUT_DIR)
 for x in FIND_REPLACE_LIST:
-   print("Find string:\n「{}」".format(x[0]))
-   print("Replace string:\n「{}」".format(x[1]))
+   print("Find string:\n{}".format(x[0]))
+   print("Replace string:\n{}".format(x[1]))
    print("\n")
 
 if (len(file_list) != 0):

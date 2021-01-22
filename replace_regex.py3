@@ -56,7 +56,7 @@ def replace_string_in_file(fpath):
       file_content = output_text
 
    if (num_replaced > 0):
-      print(("◆ changed %d %s" % (num_replaced, fpath) ))
+      print(("* changed %d %s" % (num_replaced, fpath) ))
 
       if do_backup:
          shutil.copy2(fpath, fpath + backup_suffix)
@@ -73,8 +73,8 @@ def replace_string_in_file(fpath):
 print(datetime.datetime.now())
 print("Input Dir:", input_dir)
 for x in find_replace_list:
-   print("Find regex:「{}」".format(x[0]))
-   print("Replace pattern:「{}」".format(x[1]))
+   print("Find regex:{}".format(x[0]))
+   print("Replace pattern:{}".format(x[1]))
    print("\n")
 
 if (len(file_list) != 0):
